@@ -1,26 +1,371 @@
 @import "tailwindcss";
 
+/* ── Dark mode via class strategy ─────────────────────────────────── */
+@variant dark (&:where(.dark, .dark *));
+
+/* ── Design tokens (CSS custom properties) ────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --color-background: #FAFAFA;
+  --color-background-secondary: #FFFFFF;
+  --color-surface: #F4F4F5;
+  --color-card: #FFFFFF;
+  --color-card-elevated: #FFFFFF;
+  --color-text: #18181B;
+  --color-text-secondary: #52525B;
+  --color-text-muted: #A1A1AA;
+  --color-primary: #18181B;
+  --color-primary-bg: rgba(24, 24, 27, 0.05);
+  --color-primary-border: rgba(24, 24, 27, 0.15);
+  --color-border: #E4E4E7;
+  --color-border-light: #F4F4F5;
+  --color-border-dashed: #D4D4D8;
+  --color-success: #16A34A;
+  --color-success-bg: rgba(22, 163, 74, 0.08);
+  --color-danger: #DC2626;
+  --color-danger-bg: rgba(220, 38, 38, 0.06);
+  --color-warning: #D97706;
+  --color-warning-bg: rgba(217, 119, 6, 0.07);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+.dark {
+  --color-background: #09090B;
+  --color-background-secondary: #0F0F12;
+  --color-surface: #18181B;
+  --color-card: #131316;
+  --color-card-elevated: #1C1C20;
+  --color-text: #FAFAFA;
+  --color-text-secondary: #A1A1AA;
+  --color-text-muted: #71717A;
+  --color-primary: #F4F4F5;
+  --color-primary-bg: rgba(244, 244, 245, 0.06);
+  --color-primary-border: rgba(244, 244, 245, 0.15);
+  --color-border: #27272A;
+  --color-border-light: #1C1C20;
+  --color-border-dashed: #3F3F46;
+  --color-success: #22C55E;
+  --color-success-bg: rgba(34, 197, 94, 0.10);
+  --color-danger: #EF4444;
+  --color-danger-bg: rgba(239, 68, 68, 0.10);
+  --color-warning: #F59E0B;
+  --color-warning-bg: rgba(245, 158, 11, 0.10);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ── Base ─────────────────────────────────────────────────────────── */
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100dvh;
+}
+
+/* ── Scrollbar styling ────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted);
+}
+
+/* ── Page container ── centres content on large screens ─────────── */
+.page-container {
+  max-width: 680px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Wide variant: settings, payment */
+.page-container-wide {
+  max-width: 960px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ── Stack screen transitions ───────────────────────────────── */
+.stack-screen {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transition: transform 520ms cubic-bezier(0.4, 0.0, 0.2, 1),
+              opacity   520ms cubic-bezier(0.4, 0.0, 0.2, 1);
+  overflow: hidden;
+}
+/* Screen behind (old page pushed left) — subtle scale + dim */
+.stack-screen[data-state="behind"] {
+  transform: translateX(-30%) scale(0.96);
+  opacity: 0.6;
+  pointer-events: none;
+}
+/* Fully visible active screen */
+.stack-screen[data-state="active"] {
+  transform: translateX(0%) scale(1);
+  opacity: 1;
+  pointer-events: auto;
+}
+/* New screen starts off-screen right — NO transition so it snaps instantly */
+.stack-screen[data-state="enter"] {
+  transform: translateX(100%) scale(1);
+  opacity: 1;
+  pointer-events: none;
+  transition: none;
+}
+/* Outgoing screen during pop: slides right */
+.stack-screen[data-state="exit"] {
+  transform: translateX(100%) scale(1);
+  opacity: 1;
+  pointer-events: none;
+}
+
+/* ── App-level screen navigator (SPA, all on /) ──────────────────── */
+.app-screen {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  /* Transition fires for active / behind-* / exit states */
+  transition: transform 480ms cubic-bezier(0.4, 0, 0.2, 1),
+              opacity   480ms cubic-bezier(0.4, 0, 0.2, 1),
+              border-radius 480ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ─ PUSH transition: slides in from right ─ */
+.app-screen[data-transition="push"][data-state="enter"] {
+  transform: translateX(100%) scale(1);
+  transition: none; /* snap to start — no animation */
+}
+.app-screen[data-transition="push"][data-state="active"] {
+  transform: translateX(0) scale(1);
+  opacity: 1;
+  border-radius: 0;
+}
+.app-screen[data-transition="push"][data-state="behind-push"] {
+  transform: translateX(-28%) scale(1);
+  opacity: 0.65;
+  border-radius: 0;
+}
+.app-screen[data-transition="push"][data-state="behind-modal"] {
+  transform: translateX(0) scale(0.94);
+  opacity: 0.85;
+  border-radius: 14px;
+}
+.app-screen[data-transition="push"][data-state="exit"] {
+  transform: translateX(100%) scale(1);
+  opacity: 1;
+  border-radius: 0;
+  pointer-events: none;
+}
+
+/* ─ MODAL transition: slides up from bottom ─ */
+.app-screen[data-transition="modal"][data-state="enter"] {
+  transform: translateY(100%) scale(1);
+  transition: none; /* snap to start */
+}
+.app-screen[data-transition="modal"][data-state="active"] {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  border-radius: 0;
+}
+.app-screen[data-transition="modal"][data-state="behind-push"] {
+  transform: translateX(-28%) scale(1);
+  opacity: 0.65;
+  border-radius: 0;
+}
+.app-screen[data-transition="modal"][data-state="behind-modal"] {
+  transform: translateY(0) scale(0.94);
+  opacity: 0.85;
+  border-radius: 14px;
+}
+.app-screen[data-transition="modal"][data-state="exit"] {
+  transform: translateY(100%) scale(1);
+  opacity: 1;
+  border-radius: 0;
+  pointer-events: none;
+}
+
+/* ── Fade / slide-in animations ───────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* ── Native View Transitions (page-level routing) ───────────────── */
+::view-transition-group(root) {
+  animation-duration: 0s;
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  mix-blend-mode: normal;
+  display: block;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+/* Default: Push forward (new page slides in from right) */
+::view-transition-old(root) {
+  animation: vt-push-out-left 480ms cubic-bezier(0.4, 0.0, 0.2, 1) both;
+}
+::view-transition-new(root) {
+  animation: vt-push-in-right 480ms cubic-bezier(0.4, 0.0, 0.2, 1) both;
+  z-index: 2;
+}
+
+/* Back Navigation: Pop (old page slides out to right, new slides in from left) */
+html[data-direction="back"] ::view-transition-old(root) {
+  animation: vt-pop-out-right 480ms cubic-bezier(0.4, 0.0, 0.2, 1) both;
+  z-index: 2;
+}
+html[data-direction="back"] ::view-transition-new(root) {
+  animation: vt-pop-in-left 480ms cubic-bezier(0.4, 0.0, 0.2, 1) both;
+  z-index: 1;
+}
+
+@keyframes vt-push-in-right {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+@keyframes vt-push-out-left {
+  from { transform: translateX(0); opacity: 1; }
+  to   { transform: translateX(-30%); opacity: 0.5; }
+}
+@keyframes vt-pop-in-left {
+  from { transform: translateX(-30%); opacity: 0.5; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+@keyframes vt-pop-out-right {
+  from { transform: translateX(0); }
+  to   { transform: translateX(100%); }
+}
+
+.animate-fade-in   { animation: fadeIn 0.4s ease-out; }
+.animate-slide-up  { animation: slideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
+.animate-scale-in  { animation: scaleIn 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+.animate-pulse     { animation: pulse 2.5s ease-in-out infinite; }
+
+/* ── Receipt jagged edge ────────────────────────────────────────────*/
+.receipt-top {
+  position: relative;
+}
+
+.receipt-top::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 0;
+  right: 0;
+  height: 16px;
+  background-image: radial-gradient(circle at 12px -8px, var(--color-background) 12px, transparent 13px);
+  background-size: 24px 16px;
+  background-repeat: repeat-x;
+}
+
+/* ── Shimmer loading effect ──────────────────────────────────────── */
+@keyframes shimmer {
+  from { background-position: -200% 0; }
+  to { background-position: 200% 0; }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-surface) 25%,
+    var(--color-border-light) 50%,
+    var(--color-surface) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* ── Notification toast ────────────────────────────────────────────*/
+.notification-toast {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  z-index: 9998;
+  max-width: 360px;
+  border-radius: 14px;
+  border: 1px solid var(--color-border);
+  background: var(--color-card);
+  padding: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  animation: slideUp 0.3s ease-out;
+}
+
+/* ── Print preview canvas styles ────────────────────────────────── */
+.preview-canvas-container {
+  background: #fff;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+
+/* ── Disable native button styles ────────────────────────────────── */
+button {
+  cursor: pointer;
+  font: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* ── Input base styles ────────────────────────────────────────────── */
+input, textarea, select {
+  font-family: inherit;
+  color: var(--color-text);
+}
+
+input::placeholder, textarea::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* ── Responsive helpers ───────────────────────────────────────────── */
+/* Hide FAB on desktop, show nav button */
+@media (min-width: 768px) {
+  .mobile-only { display: none !important; }
+}
+
+@media (max-width: 767px) {
+  .desktop-only { display: none !important; }
 }
