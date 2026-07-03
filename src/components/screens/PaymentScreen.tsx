@@ -5,7 +5,7 @@ import { Lock, FileText } from 'lucide-react';
 import { useTheme } from '../../theme/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
 import { usePrintJob } from '../../context/PrintJobContext';
-import { useStackNav } from '../StackNavigator';
+import { useAppNav } from '../AppNavigator';
 import { CustomAlertAPI } from '../../context/AlertContext';
 import Header from '../Header';
 import Btn from '../Btn';
@@ -14,26 +14,13 @@ import { createOrder, buildPrintConfig } from '../../services/api';
 import { getFileId, startUploads } from '../../services/fileUploadManager';
 import { useRouter } from 'next/navigation';
 
-const RAZORPAY_KEY = 'rzp_test_StI0D1pMPdbae3';
+import { RAZORPAY_KEY, processRazorpayPayment } from '../../utils/razorpay';
 
-declare global {
-  interface Window {
-    Razorpay: new (options: Record<string, unknown>) => {
-      open: () => void;
-      on: (event: string, handler: (response: unknown) => void) => void;
-    };
-  }
-}
-
-interface Props {
-  onSuccess: () => void;
-}
-
-export default function PaymentScreen({ onSuccess }: Props) {
+export default function PaymentScreen() {
   const { colors } = useTheme();
   const { getOrderSummary, refreshOrders, resetFlow, files } = usePrintJob();
   const { getValidToken, user } = useAuth();
-  const { pop } = useStackNav();
+  const { pop } = useAppNav();
   const router = useRouter();
   const [isPaying, setIsPaying] = useState(false);
   const [statusText, setStatusText] = useState('');
@@ -63,50 +50,40 @@ export default function PaymentScreen({ onSuccess }: Props) {
       const rpOrder = await createOrder(printConfigs, token);
       setStatusText('Opening payment…');
 
-      await new Promise<void>((resolve, reject) => {
-        const options = {
-          description: 'printf - Print Order',
-          currency: rpOrder.currency || 'INR',
-          key: RAZORPAY_KEY,
-          amount: rpOrder.amount,
-          name: 'printf',
-          order_id: rpOrder.id,
-          prefill: { email: user?.email || '', name: user?.name || '' },
-          theme: { color: '#18181B' },
-          handler: () => resolve(),
-          modal: { ondismiss: () => reject(new Error('cancelled')) },
-        };
-        const rzp = new window.Razorpay(options);
-        rzp.on('payment.failed', () => reject(new Error('payment_failed')));
-        rzp.open();
+      await processRazorpayPayment({
+        orderId: rpOrder.id,
+        amount: rpOrder.amount,
+        currency: rpOrder.currency,
+        userEmail: user?.email || '',
+        userName: user?.name || ''
       });
 
       const orderId = rpOrder.localOrderId;
+      setStatusText('Processing transaction...');
+      await refreshOrders().catch(() => {});
       resetFlow();
-      refreshOrders().catch(() => {});
-      onSuccess();
       router.push(`/order-result?success=true&orderId=${orderId}`);
 
     } catch (err: unknown) {
-      const msg = (err instanceof Error) ? err.message : '';
+      const msg = err instanceof Error ? err.message : '';
+      
+      // Let the global PrintJobContext handle clearing state via the success/failure screen
+      // Do not call reset() here to prevent unmounting the PaymentScreen before routing
+      setStatusText('Processing transaction...');
+
       if (msg === 'cancelled') {
-        CustomAlertAPI.alert('Cancelled', 'Payment was cancelled.');
+        router.push('/order-result?success=false&reason=cancelled');
       } else if (msg.includes('Unable to connect') || msg.includes('timed out') || msg.includes('Unable to upload')) {
-        CustomAlertAPI.alert('Connection Error', 'Unable to connect right now. Please try again.');
+        router.push('/order-result?success=false&reason=timeout');
       } else if (msg.includes('Authentication required')) {
-        CustomAlertAPI.alert('Session Expired', 'Please sign out and sign in again.');
+        router.push('/order-result?success=false&reason=session');
       } else if (msg === 'payment_failed') {
-        resetFlow();
-        onSuccess();
-        router.push('/order-result?success=false');
+        router.push('/order-result?success=false&reason=payment_failed');
       } else {
-        CustomAlertAPI.alert('Error', msg || 'Something went wrong. Please try again.');
+        router.push('/order-result?success=false&reason=unknown');
       }
-    } finally {
-      setIsPaying(false);
-      setStatusText('');
     }
-  }, [items, files, getValidToken, user, refreshOrders, resetFlow, router, onSuccess]);
+  }, [items, files, getValidToken, user, refreshOrders, resetFlow, router]);
 
   return (
     <div className="h-full flex flex-col overflow-hidden" style={{ backgroundColor: colors.background }}>

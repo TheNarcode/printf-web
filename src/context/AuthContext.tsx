@@ -169,7 +169,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
     setIdToken(null);
     clearAllStorage();
-    router.push('/print');
+    router.push('/');
   }, [router]);
 
   const getValidToken = useCallback(async (): Promise<string | null> => {

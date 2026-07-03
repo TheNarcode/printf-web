@@ -33,7 +33,10 @@ export function GET() {
 
     self.addEventListener('notificationclick', event => {
       event.notification.close();
-      const url = event.notification.data?.click_action || '/';
+      let url = event.notification.data?.click_action || '/';
+      if (event.notification.data?.orderId) {
+        url = \`/dashboard?orderId=\${event.notification.data.orderId}\`;
+      }
       event.waitUntil(clients.openWindow(url));
     });
   `;

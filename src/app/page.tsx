@@ -1,5 +1,6 @@
-import LandingClient from '../components/LandingClient';
+import React from 'react';
+import OnboardingScreen from '../components/OnboardingScreen';
 
 export default function RootPage() {
-  return <LandingClient />;
+  return <OnboardingScreen />;
 }

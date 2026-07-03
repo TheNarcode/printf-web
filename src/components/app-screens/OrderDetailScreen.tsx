@@ -1,5 +1,5 @@
 'use client';
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Printer } from 'lucide-react';
 import { useTheme } from '../../theme/ThemeContext';
 import { usePrintJob } from '../../context/PrintJobContext';
@@ -7,6 +7,8 @@ import Header from '../Header';
 import { formatCurrency, formatDateTime } from '../../utils/formatters';
 import { parsePageRange } from '../../utils/previewUtils';
 import { useAppNav } from '../AppNavigator';
+import { usePayOrder } from '../../hooks/usePayOrder';
+import Btn from '../Btn';
 
 function Separator({ color }: { color: string }) {
   return (
@@ -20,26 +22,50 @@ export default function OrderDetailScreen({ orderId }: { orderId: string }) {
   const { colors, isDark } = useTheme();
   const { orders, refreshOrders } = usePrintJob();
   const { pop } = useAppNav();
+  const { payOrder, isPaying } = usePayOrder();
   const lastRefresh = useRef(0);
+
+  const [fetchAttempts, setFetchAttempts] = useState(0);
+  const order = orders.find(o => o.id === orderId);
 
   useEffect(() => {
     const now = Date.now();
-    if (now - lastRefresh.current < 30_000) return;
+    if (now - lastRefresh.current < 30_000 && !(!order && fetchAttempts < 3)) return;
     lastRefresh.current = now;
     refreshOrders().catch(() => {});
-  }, [refreshOrders]);
+  }, [refreshOrders, order, fetchAttempts]);
 
-  const order = orders.find(o => o.id === orderId);
+  useEffect(() => {
+    if (!order && fetchAttempts < 3) {
+      const timer = setTimeout(() => {
+        refreshOrders().finally(() => setFetchAttempts(a => a + 1));
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [order, fetchAttempts, refreshOrders]);
+
   const screenBg = isDark ? colors.background : '#E5E7EB';
   const slipBg = isDark ? '#27272A' : '#FFFFFF';
   const sepColor = colors.textMuted + '70';
 
   if (!order) {
+    if (fetchAttempts >= 3) {
+      return (
+        <div className="h-full flex flex-col" style={{ backgroundColor: screenBg }}>
+          <Header title="Order Details" showBack onBack={pop} />
+          <div className="flex-1 flex items-center justify-center">
+            <p className="text-sm" style={{ color: colors.textMuted }}>Order not found</p>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="h-full flex flex-col" style={{ backgroundColor: screenBg }}>
         <Header title="Order Details" showBack onBack={pop} />
-        <div className="flex-1 flex items-center justify-center">
-          <p className="text-sm" style={{ color: colors.textMuted }}>Order not found</p>
+        <div className="flex-1 flex flex-col items-center justify-center gap-3">
+          <div className="w-6 h-6 rounded-full border-2 border-t-transparent animate-spin" style={{ borderColor: colors.primary }} />
+          <p className="text-sm" style={{ color: colors.textMuted }}>Loading order details...</p>
         </div>
       </div>
     );
@@ -72,7 +98,7 @@ export default function OrderDetailScreen({ orderId }: { orderId: string }) {
                 <p key={line} className="font-mono text-[10px] leading-4 text-center" style={{ color: colors.textSecondary }}>{line}</p>
               ))}
             </div>
-            <div className="flex justify-center my-1">
+            <div className="flex justify-center my-1 items-center gap-3">
               <span className="font-mono font-bold text-[11px] tracking-[1.5px] px-3 py-1 rounded-xl border" style={{ color: statusColor, backgroundColor: statusBg, borderColor: statusColor }}>{statusLabel}</span>
             </div>
             <Separator color={sepColor} />
@@ -150,6 +176,16 @@ export default function OrderDetailScreen({ orderId }: { orderId: string }) {
           </div>
         </div>
       </main>
+
+      {order.status === 0 && !order.paid && order.paymentRequestId && (
+        <div className="flex-shrink-0 px-6 py-5 border-t sticky bottom-0 z-20" style={{ backgroundColor: colors.card, borderColor: colors.border }}>
+          <div className="page-container">
+            <Btn variant="solid" size="lg" fullWidth onClick={() => payOrder(order)} disabled={isPaying}>
+              {isPaying ? 'PROCESSING...' : `PAY NOW - ${formatCurrency(order.totalPrice)}`}
+            </Btn>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

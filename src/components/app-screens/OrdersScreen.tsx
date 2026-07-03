@@ -7,6 +7,7 @@ import Header from '../Header';
 import OrderCard from '../OrderCard';
 import Btn from '../Btn';
 import { useAppNav } from '../AppNavigator';
+import { usePayOrder } from '../../hooks/usePayOrder';
 import type { Order } from '../../types';
 
 type Filter = 'all' | 'pending' | 'completed' | 'failed';
@@ -21,6 +22,7 @@ export default function OrdersScreen({ initialFilter }: { initialFilter?: string
   const { colors } = useTheme();
   const { orders, refreshOrders } = usePrintJob();
   const { pop, push } = useAppNav();
+  const { payOrder } = usePayOrder();
   const [refreshing, setRefreshing] = useState(false);
   const lastRefresh = useRef(0);
   const parsedFilter = useMemo((): Filter => {
@@ -57,8 +59,12 @@ export default function OrdersScreen({ initialFilter }: { initialFilter?: string
   }, [orders, filter, search]);
 
   const handleOrderPress = useCallback((order: Order) => {
-    push({ id: 'order_detail', transition: 'push', params: { orderId: order.id } });
-  }, [push]);
+    if ((order as any)._payNowTrigger) {
+      payOrder(order);
+    } else {
+      push({ id: 'order_detail', transition: 'push', params: { orderId: order.id } });
+    }
+  }, [push, payOrder]);
 
   return (
     <div className="h-full flex flex-col overflow-hidden" style={{ backgroundColor: colors.background }}>
@@ -92,11 +98,8 @@ export default function OrdersScreen({ initialFilter }: { initialFilter?: string
             })}
           </div>
           {filteredOrders.length === 0 ? (
-            <div className="flex flex-col items-center py-16 gap-4">
-              <span className="text-sm font-medium" style={{ color: colors.textMuted }}>No orders found</span>
-              {orders.length === 0 && filter === 'all' && !search && (
-                <Btn variant="solid" size="md" onClick={pop}>Start Printing</Btn>
-              )}
+            <div className="py-8 flex flex-col items-center gap-1.5">
+              <span className="text-base font-semibold" style={{ color: colors.text }}>No orders found</span>
             </div>
           ) : (
             <div className="flex flex-col gap-3">

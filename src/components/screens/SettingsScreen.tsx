@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { useTheme } from '../../theme/ThemeContext';
 import { usePrintJob } from '../../context/PrintJobContext';
-import { useStackNav } from '../StackNavigator';
+import { useAppNav } from '../AppNavigator';
 import Header from '../Header';
 import Btn from '../Btn';
 import type { PrintSettings, UploadedFile } from '../../types';
@@ -115,7 +115,7 @@ function PreviewSheet({ sheetIndex, selectedPages, pps, thumbnails, thumbLoading
 export default function SettingsScreen() {
   const { colors } = useTheme();
   const { files, fileSettings, updateFileSettings } = usePrintJob();
-  const { push, pop } = useStackNav();
+  const { push, pop } = useAppNav();
 
   const [selectedIdx, setSelectedIdx]       = useState(0);
   const [showSidesDropdown, setShowSidesDd] = useState(false);
@@ -356,7 +356,7 @@ export default function SettingsScreen() {
 
       <div className="flex-shrink-0 px-5 py-3.5 border-t z-30" style={{ backgroundColor: colors.card, borderColor: colors.border }}>
         <div className="page-container-wide">
-          <Btn variant="solid" size="lg" fullWidth onClick={() => !pageRangeError && push('payment')} disabled={!!pageRangeError}>
+          <Btn variant="solid" size="lg" fullWidth onClick={() => push({ id: 'payment', transition: 'push' })} disabled={!!pageRangeError}>
             Proceed to Payment
           </Btn>
         </div>

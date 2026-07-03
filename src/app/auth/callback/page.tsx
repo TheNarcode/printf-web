@@ -25,13 +25,13 @@ function CallbackContent() {
 
     if (error) {
       console.error('OAuth error:', error);
-      router.replace('/print');
+      router.replace('/');
       return;
     }
 
     if (!idToken) {
       console.error('No id_token in callback URL');
-      router.replace('/print');
+      router.replace('/');
       return;
     }
 
@@ -40,16 +40,16 @@ function CallbackContent() {
 
     if (handler) {
       handler(idToken);
-      router.replace('/print');
+      router.replace('/dashboard');
     } else {
       // Handler not ready yet — retry in a tick
       setTimeout(() => {
         const h = (window as unknown as Record<string, unknown>).__printfHandleOAuthCallback as ((token: string) => void) | undefined;
         if (h) {
           h(idToken);
-          router.replace('/print');
+          router.replace('/dashboard');
         } else {
-          router.replace('/print');
+          router.replace('/');
         }
       }, 100);
     }

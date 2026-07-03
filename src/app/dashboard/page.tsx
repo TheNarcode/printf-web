@@ -1,16 +1,17 @@
 'use client';
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Printer, ChevronRight, ClipboardList, CheckCircle2, RefreshCw, RefreshCcw, AlertCircle } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../theme/ThemeContext';
 import { usePrintJob } from '../../context/PrintJobContext';
+import { usePayOrder } from '../../hooks/usePayOrder';
 import GoogleLogo from '../../components/GoogleLogo';
 import Header from '../../components/Header';
 import ProfileButton from '../../components/ProfileButton';
 import OrderCard from '../../components/OrderCard';
 import FAB from '../../components/FAB';
-import CreateOrderFlow from '../../components/CreateOrderFlow';
 import { AppNavigator, useAppNav } from '../../components/AppNavigator';
 import type { NavFrame } from '../../components/AppNavigator';
 import ProfileScreen from '../../components/app-screens/ProfileScreen';
@@ -28,122 +29,43 @@ function getGreeting(): string {
   return 'Good evening';
 }
 
-// ─── Login Screen ─────────────────────────────────────────────────────────────
-function LoginScreen() {
-  const { isLoading, signInWithGoogle } = useAuth();
-  const { colors } = useTheme();
 
-  const contentRef = useRef<HTMLDivElement>(null);
-  const btnRef     = useRef<HTMLDivElement>(null);
+
+function DeepLinkHandler() {
+  const { push } = useAppNav();
+  const handled = useRef(false);
 
   useEffect(() => {
-    const content = contentRef.current;
-    const btn     = btnRef.current;
-    if (!content || !btn) return;
-    content.style.opacity = '0';
-    content.style.transform = 'translateY(20px)';
-    btn.style.opacity = '0';
+    if (handled.current) return;
+    handled.current = true;
+    const params = new URLSearchParams(window.location.search);
+    const orderId = params.get('orderId');
+    if (orderId) {
+      window.history.replaceState({}, '', '/dashboard');
+      setTimeout(() => {
+        push({ id: 'order_detail', transition: 'push', params: { orderId } });
+      }, 50);
+    }
+  }, [push]);
 
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        content.style.transition = 'opacity 0.5s ease-out, transform 0.5s cubic-bezier(0.16,1,0.3,1)';
-        content.style.opacity = '1';
-        content.style.transform = 'translateY(0)';
-        setTimeout(() => {
-          btn.style.transition = 'opacity 0.4s ease-out';
-          btn.style.opacity = '1';
-        }, 100);
-      });
-    });
-  }, []);
-
-  const handleSignIn = useCallback(async () => {
-    await signInWithGoogle();
-  }, [signInWithGoogle]);
-
-  return (
-    <div className="min-h-dvh flex flex-col overflow-hidden" style={{ backgroundColor: colors.background }}>
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div
-          className="absolute rounded-full"
-          style={{
-            width: 500, height: 500,
-            top: -120, right: -180,
-            backgroundColor: colors.primaryBg,
-            opacity: 0.5,
-          }}
-        />
-        <div
-          className="absolute rounded-full"
-          style={{
-            width: 380, height: 380,
-            bottom: -60, left: -180,
-            backgroundColor: colors.primaryBg,
-            opacity: 0.3,
-          }}
-        />
-      </div>
-
-      <div className="relative flex-1 flex flex-col justify-center px-8 gap-[60px] max-w-sm w-full mx-auto">
-        <div ref={contentRef} className="flex flex-col items-center gap-3.5">
-          <div
-            className="w-[72px] h-[72px] rounded-[20px] flex items-center justify-center"
-            style={{ backgroundColor: colors.surface, boxShadow: '0 4px 16px rgba(0,0,0,0.06)' }}
-          >
-            <Printer size={32} color={colors.primary} strokeWidth={1.5} />
-          </div>
-          <p className="text-[40px] leading-none tracking-[-1.5px]" style={{ color: colors.text, fontWeight: 900, fontFamily: 'var(--font-geist-sans), sans-serif' }}>
-            printf
-          </p>
-          <p className="text-[14px] text-center" style={{ color: colors.textMuted, marginTop: -4, fontFamily: 'var(--font-geist-sans), sans-serif', fontWeight: 500 }}>
-            Print anything, anywhere.
-          </p>
-        </div>
-
-        <div ref={btnRef}>
-          <button
-            onClick={handleSignIn}
-            disabled={isLoading}
-            className="w-full flex items-center justify-center gap-3 rounded-[100px] border transition-all active:scale-95 hover:opacity-80 disabled:opacity-60"
-            style={{ backgroundColor: colors.card, borderColor: colors.border, paddingTop: 14, paddingBottom: 14, minHeight: 52, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}
-          >
-            {isLoading ? (
-              <div className="w-4 h-4 rounded-full border-2 border-t-transparent animate-spin" style={{ borderColor: colors.text }} />
-            ) : (
-              <>
-                <GoogleLogo size={18} />
-                <span className="text-[14px]" style={{ color: colors.text, fontWeight: 600, fontFamily: 'var(--font-geist-sans), sans-serif' }}>Sign in with Google</span>
-              </>
-            )}
-          </button>
-        </div>
-
-        <div className="flex items-center justify-center gap-2 pb-8" style={{ color: colors.textMuted }}>
-          <a href="/terms" className="text-[11px] hover:underline opacity-60 hover:opacity-100 transition-opacity">Terms</a>
-          <span className="text-[11px] opacity-30">·</span>
-          <a href="/privacy" className="text-[11px] hover:underline opacity-60 hover:opacity-100 transition-opacity">Privacy</a>
-        </div>
-      </div>
-    </div>
-  );
+  return null;
 }
 
 // ─── Home Screen ──────────────────────────────────────────────────────────────
 function HomeScreen() {
   const { colors } = useTheme();
   const { orders, refreshOrders, resetFlow } = usePrintJob();
+  const { payOrder } = usePayOrder();
   const { user } = useAuth();
   const { push } = useAppNav();
   const [refreshing, setRefreshing] = useState(false);
-  const [showFlow, setShowFlow] = useState(false);
 
   const handleRefresh = useCallback(async () => {
     setRefreshing(true);
     try { await refreshOrders(); } finally { setRefreshing(false); }
   }, [refreshOrders]);
 
-  const handleNewOrder  = useCallback(() => setShowFlow(true), []);
-  const handleFlowClose = useCallback(() => { resetFlow(); setShowFlow(false); }, [resetFlow]);
+  const handleNewOrder  = useCallback(() => push({ id: 'upload', transition: 'push' }), [push]);
 
   const handleOrderPress = useCallback((order: Order) => {
     push({ id: 'order_detail', transition: 'push', params: { orderId: order.id } });
@@ -168,7 +90,8 @@ function HomeScreen() {
   return (
     <div className="h-full flex flex-col overflow-hidden" style={{ backgroundColor: colors.background }}>
       <Header
-        title="printf"
+        showBrand
+        transparent
         rightElement={
           <div className="flex items-center gap-2">
             <button
@@ -231,20 +154,29 @@ function HomeScreen() {
               ))}
             </div>
           ) : (
-            <div
-              className="flex flex-col items-center justify-center gap-3 py-16 px-4 text-center rounded-2xl border border-dashed"
-              style={{ borderColor: colors.border, backgroundColor: colors.surface }}
-            >
-              <ClipboardList size={32} color={colors.textMuted} strokeWidth={1.5} />
-              <span className="text-lg font-bold" style={{ color: colors.text }}>No orders yet</span>
-              <span className="text-sm" style={{ color: colors.textSecondary }}>Tap the + button to start printing your documents.</span>
+            <div className="py-8 flex flex-col items-center gap-1.5">
+              <span className="text-base font-semibold" style={{ color: colors.text }}>No orders yet</span>
+              <span className="text-sm" style={{ color: colors.textMuted }}>Tap the + button to start printing.</span>
             </div>
           )}
         </div>
       </main>
 
       <FAB onClick={handleNewOrder} />
-      {showFlow && <CreateOrderFlow onClose={handleFlowClose} />}
+    </div>
+  );
+}
+
+import { Suspense, lazy } from 'react';
+
+const UploadScreen   = lazy(() => import('../../components/screens/UploadScreen'));
+const SettingsScreen = lazy(() => import('../../components/screens/SettingsScreen'));
+const PaymentScreen  = lazy(() => import('../../components/screens/PaymentScreen'));
+
+function Spinner() {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+      <div style={{ width: 24, height: 24, borderRadius: '50%', border: '2px solid #ccc', borderTopColor: 'transparent', animation: 'spin 0.8s linear infinite' }} />
     </div>
   );
 }
@@ -253,12 +185,15 @@ function HomeScreen() {
 function renderAppScreen(frame: NavFrame): React.ReactNode {
   const { screen } = frame;
   switch (screen.id) {
-    case 'home':         return <HomeScreen />;
+    case 'home':         return <><DeepLinkHandler /><HomeScreen /></>;
     case 'orders':       return <OrdersScreen initialFilter={screen.params?.filter} />;
     case 'order_detail': return <OrderDetailScreen orderId={screen.params?.orderId ?? ''} />;
     case 'profile':      return <ProfileScreen />;
     case 'terms':        return <TermsScreen />;
     case 'privacy':      return <PrivacyScreen />;
+    case 'upload':       return <Suspense fallback={<Spinner />}><UploadScreen /></Suspense>;
+    case 'settings':     return <Suspense fallback={<Spinner />}><SettingsScreen /></Suspense>;
+    case 'payment':      return <Suspense fallback={<Spinner />}><PaymentScreen /></Suspense>;
     default:             return <HomeScreen />;
   }
 }
@@ -271,8 +206,15 @@ function AuthenticatedHome() {
 export default function PrintPage() {
   const { isAuthenticated, isLoading } = useAuth();
   const { colors } = useTheme();
+  const router = useRouter();
 
-  if (isLoading) {
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      router.replace('/');
+    }
+  }, [isLoading, isAuthenticated, router]);
+
+  if (isLoading || !isAuthenticated) {
     return (
       <div className="min-h-dvh flex items-center justify-center" style={{ backgroundColor: colors.background }}>
         <div className="w-6 h-6 rounded-full border-2 border-t-transparent animate-spin" style={{ borderColor: colors.textMuted }} />
@@ -280,9 +222,5 @@ export default function PrintPage() {
     );
   }
 
-  if (isAuthenticated) {
-    return <AuthenticatedHome />;
-  }
-
-  return <LoginScreen />;
+  return <AuthenticatedHome />;
 }

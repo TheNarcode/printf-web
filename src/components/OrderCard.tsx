@@ -52,11 +52,26 @@ const OrderCard = memo(({ order, onPress, variant = 'list' }: OrderCardProps) =>
         <div className="flex-1 min-w-0 flex flex-col gap-0.5">
           <div className="flex items-center justify-between gap-2">
             <span className="text-sm font-semibold truncate" style={{ color: colors.text }}>{order.orderRef}</span>
-            <span className="flex items-center gap-1 px-2 py-0.5 rounded-full border flex-shrink-0 text-[9px] font-bold uppercase tracking-wider"
-              style={{ backgroundColor: statusStyle.bg, borderColor: statusStyle.border, color: statusStyle.text }}>
-              <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: statusStyle.dot }} />
-              {statusStyle.label}
-            </span>
+            {order.status === 0 && !order.paid && order.paymentRequestId ? (
+              <span
+                role="button"
+                tabIndex={0}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onPress({ ...order, _payNowTrigger: true } as any);
+                }}
+                className="px-2 py-0.5 rounded-full border text-[9px] font-bold uppercase tracking-wider cursor-pointer"
+                style={{ backgroundColor: colors.warningBg, borderColor: colors.warning, color: colors.warning }}
+              >
+                PAY NOW
+              </span>
+            ) : (
+              <span className="flex items-center gap-1 px-2 py-0.5 rounded-full border flex-shrink-0 text-[9px] font-bold uppercase tracking-wider"
+                style={{ backgroundColor: statusStyle.bg, borderColor: statusStyle.border, color: statusStyle.text }}>
+                <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: statusStyle.dot }} />
+                {statusStyle.label}
+              </span>
+            )}
           </div>
           <div className="flex items-center justify-between gap-2">
             <span className="text-xs truncate" style={{ color: colors.textMuted }}>{order.totalCopies} {order.totalCopies === 1 ? 'Copy' : 'Copies'} • {order.printerName}</span>
@@ -80,10 +95,25 @@ const OrderCard = memo(({ order, onPress, variant = 'list' }: OrderCardProps) =>
         <div className="flex-1 min-w-0 flex flex-col gap-0.5">
           <div className="flex items-center justify-between gap-2">
             <span className="text-sm font-semibold truncate" style={{ color: colors.text }}>{order.orderRef}</span>
-            <span className="px-1.5 py-0.5 rounded-md text-[9px] font-bold flex-shrink-0 uppercase tracking-wide"
-              style={{ backgroundColor: listBadgeStyle.bg, color: listBadgeStyle.text }}>
-              {listBadgeStyle.label}
-            </span>
+            {order.status === 0 && !order.paid && order.paymentRequestId ? (
+              <span
+                role="button"
+                tabIndex={0}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onPress({ ...order, _payNowTrigger: true } as any);
+                }}
+                className="px-2 py-0.5 rounded-full border text-[9px] font-bold uppercase tracking-wider cursor-pointer"
+                style={{ backgroundColor: colors.warningBg, borderColor: colors.warning, color: colors.warning }}
+              >
+                PAY NOW
+              </span>
+            ) : (
+              <span className="px-1.5 py-0.5 rounded-md text-[9px] font-bold flex-shrink-0 uppercase tracking-wide"
+                style={{ backgroundColor: listBadgeStyle.bg, borderColor: listBadgeStyle.bg, color: listBadgeStyle.text }}>
+                {listBadgeStyle.label}
+              </span>
+            )}
           </div>
           <span className="text-xs" style={{ color: colors.textMuted }}>
             {order.totalCopies} {order.totalCopies === 1 ? 'Copy' : 'Copies'} • {formatDateTime(order.createdAt)}

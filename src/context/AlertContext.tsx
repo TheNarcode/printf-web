@@ -15,13 +15,20 @@ interface AlertState {
   buttons: AlertButton[];
 }
 
+interface ToastState {
+  visible: boolean;
+  title: string;
+  message: string;
+  orderId?: string;
+}
+
 interface AlertContextValue {
   alert: (title: string, message: string, buttons?: AlertButton[]) => void;
 }
 
 const AlertContext = createContext<AlertContextValue>({ alert: () => {} });
 
-// Global singleton for imperative usage (like RN's CustomAlertAPI)
+// Global singleton for imperative usage
 let _alertFn: ((title: string, message: string, buttons?: AlertButton[]) => void) | null = null;
 
 export const CustomAlertAPI = {
@@ -35,6 +42,10 @@ export function AlertProvider({ children }: { children: React.ReactNode }) {
     visible: false, title: '', message: '', buttons: [],
   });
 
+  const [toast, setToast] = useState<ToastState>({
+    visible: false, title: '', message: '', orderId: undefined,
+  });
+
   const alert = useCallback((title: string, message: string, buttons?: AlertButton[]) => {
     setState({ visible: true, title, message, buttons: buttons || [{ text: 'OK' }] });
   }, []);
@@ -45,8 +56,13 @@ export function AlertProvider({ children }: { children: React.ReactNode }) {
     // Listen for FCM foreground notifications
     const handleNotification = (e: Event) => {
       const customEvent = e as CustomEvent;
-      const { title, body } = customEvent.detail;
-      alert(title || 'Notification', body || '');
+      const { title, body, orderId } = customEvent.detail;
+      setToast({ visible: true, title: title || 'Notification', message: body || '', orderId });
+      
+      // Auto-hide toast after 4 seconds
+      setTimeout(() => {
+        setToast(prev => ({ ...prev, visible: false }));
+      }, 4000);
     };
     window.addEventListener('printf-notification', handleNotification);
     
@@ -58,9 +74,43 @@ export function AlertProvider({ children }: { children: React.ReactNode }) {
 
   const hide = useCallback(() => setState(s => ({ ...s, visible: false })), []);
 
+  const handleToastClick = useCallback(() => {
+    setToast(prev => ({ ...prev, visible: false }));
+    if (toast.orderId) {
+      window.dispatchEvent(new CustomEvent('printf-open-order', { detail: { orderId: toast.orderId } }));
+    }
+  }, [toast.orderId]);
+
   return (
     <AlertContext.Provider value={{ alert }}>
       {children}
+      
+      {/* Toast Notification (Slide down from top) */}
+      <div 
+        className="fixed left-0 right-0 z-[9999] flex justify-center px-4 pointer-events-none transition-all duration-300 ease-out"
+        style={{ 
+          top: toast.visible ? 24 : -100,
+          opacity: toast.visible ? 1 : 0
+        }}
+      >
+        <div 
+          onClick={handleToastClick}
+          className="pointer-events-auto cursor-pointer rounded-2xl shadow-xl border overflow-hidden backdrop-blur-md"
+          style={{ 
+            width: '100%', maxWidth: 360, 
+            backgroundColor: 'var(--color-card)', borderColor: 'var(--color-border)' 
+          }}
+        >
+          <div className="px-4 py-3">
+            <h4 className="text-sm font-bold truncate" style={{ color: 'var(--color-text)' }}>{toast.title}</h4>
+            {toast.message && (
+              <p className="text-xs mt-0.5 truncate" style={{ color: 'var(--color-text-secondary)' }}>{toast.message}</p>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Full Screen Alert */}
       {state.visible && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-5" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
           <div

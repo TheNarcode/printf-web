@@ -36,6 +36,7 @@ export interface Order {
   totalPrice: number;
   convenienceFee: number;
   status: OrderStatus;
+  paid: boolean;
   printerNumber: string;
   printerName: string;
   totalPages: number;

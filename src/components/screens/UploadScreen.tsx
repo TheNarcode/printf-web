@@ -3,7 +3,8 @@
 import React, { useCallback, useState } from 'react';
 import { useTheme } from '../../theme/ThemeContext';
 import { usePrintJob } from '../../context/PrintJobContext';
-import { useStackNav } from '../StackNavigator';
+import { useAppNav } from '../AppNavigator';
+import { useAuth } from '../../context/AuthContext';
 import Header from '../Header';
 import FileDropZone from '../FileDropZone';
 import FileCard from '../FileCard';
@@ -11,15 +12,13 @@ import Btn from '../Btn';
 import type { UploadedFile } from '../../types';
 import { generateId, formatFileSize } from '../../utils/formatters';
 import { getPdfPageCount } from '../../utils/previewUtils';
+import { startUploads } from '../../services/fileUploadManager';
 
-interface Props {
-  onExit: () => void;
-}
-
-export default function UploadScreen({ onExit }: Props) {
+export default function UploadScreen() {
   const { colors } = useTheme();
   const { files, addFiles, removeFile, resetFlow } = usePrintJob();
-  const { push } = useStackNav();
+  const { getValidToken } = useAuth();
+  const { push, pop } = useAppNav();
   const [processing, setProcessing] = useState(false);
 
   const handleFiles = useCallback(async (rawFiles: File[]) => {
@@ -47,23 +46,21 @@ export default function UploadScreen({ onExit }: Props) {
 
   const handleBack = useCallback(() => {
     resetFlow();
-    onExit();
-  }, [resetFlow, onExit]);
+    pop();
+  }, [resetFlow, pop]);
+
+  const handleContinue = useCallback(() => {
+    const uploadableFiles = files.map(f => ({ id: f.id, file: f.file!, name: f.name, type: f.type })).filter(f => f.file);
+    startUploads(uploadableFiles, getValidToken);
+    push({ id: 'settings', transition: 'push' });
+  }, [files, getValidToken, push]);
 
   return (
     <div className="h-full flex flex-col overflow-hidden" style={{ backgroundColor: colors.background }}>
-      <Header title="Upload Files" showBack onBack={handleBack} />
+      <Header title="Upload Files" subtitle="Step 1 of 3" showBack onBack={handleBack} />
 
       <main className="flex-1 overflow-y-auto pb-8">
         <div className="page-container px-5 pt-4">
-          <div className="mb-5 mt-1">
-            <h1 className="text-2xl font-bold tracking-tight mb-1" style={{ color: colors.text, letterSpacing: '-0.3px' }}>
-              Upload files
-            </h1>
-            <p className="text-sm" style={{ color: colors.textSecondary }}>
-              Add the documents or images you'd like to print.
-            </p>
-          </div>
 
           <FileDropZone onFiles={handleFiles} />
 
@@ -95,7 +92,7 @@ export default function UploadScreen({ onExit }: Props) {
       {files.length > 0 && (
         <div className="flex-shrink-0 px-6 py-5 border-t" style={{ backgroundColor: colors.card, borderColor: colors.border }}>
           <div className="page-container">
-            <Btn variant="solid" size="lg" fullWidth onClick={() => push('settings')} disabled={processing}>
+            <Btn variant="solid" size="lg" fullWidth onClick={handleContinue} disabled={processing}>
               Continue to Settings
             </Btn>
           </div>

@@ -11,15 +11,19 @@ interface HeaderProps {
   onBack?: () => void;
   rightElement?: React.ReactNode;
   showBrand?: boolean;
+  transparent?: boolean;
 }
 
-export default function Header({ title, subtitle, showBack, onBack, rightElement, showBrand }: HeaderProps) {
+export default function Header({ title, subtitle, showBack, onBack, rightElement, showBrand, transparent = true }: HeaderProps) {
   const { colors } = useTheme();
 
   return (
     <header
-      className="flex items-center justify-between px-6 py-4 border-b sticky top-0 z-50 backdrop-blur-md"
-      style={{
+      className={`flex items-center justify-between px-6 py-4 sticky top-0 z-50 ${transparent ? '' : 'border-b backdrop-blur-md'}`}
+      style={transparent ? {
+        backgroundColor: 'transparent',
+        borderColor: 'transparent',
+      } : {
         backgroundColor: colors.background + 'EE',
         borderColor: colors.border,
       }}
