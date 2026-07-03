@@ -10,10 +10,11 @@ import { useAppNav } from '../AppNavigator';
 import { usePayOrder } from '../../hooks/usePayOrder';
 import type { Order } from '../../types';
 
-type Filter = 'all' | 'pending' | 'completed' | 'failed';
+type Filter = 'all' | 'payment_pending' | 'in_progress' | 'completed' | 'failed';
 const FILTERS: { key: Filter; label: string }[] = [
   { key: 'all', label: 'All' },
-  { key: 'pending', label: 'Pending' },
+  { key: 'payment_pending', label: 'Payment Pending' },
+  { key: 'in_progress', label: 'In Progress' },
   { key: 'completed', label: 'Completed' },
   { key: 'failed', label: 'Failed' },
 ];
@@ -26,7 +27,8 @@ export default function OrdersScreen({ initialFilter }: { initialFilter?: string
   const [refreshing, setRefreshing] = useState(false);
   const lastRefresh = useRef(0);
   const parsedFilter = useMemo((): Filter => {
-    if (initialFilter === 'pending' || initialFilter === 'inProgress') return 'pending';
+    if (initialFilter === 'payment_pending') return 'payment_pending';
+    if (initialFilter === 'in_progress') return 'in_progress';
     if (initialFilter === 'completed') return 'completed';
     if (initialFilter === 'failed') return 'failed';
     return 'all';
@@ -48,7 +50,8 @@ export default function OrdersScreen({ initialFilter }: { initialFilter?: string
 
   const filteredOrders = useMemo(() => {
     let result = orders;
-    if (filter === 'pending') result = result.filter(o => o.status === 0);
+    if (filter === 'payment_pending') result = result.filter(o => o.status === 0 && !o.paid);
+    else if (filter === 'in_progress') result = result.filter(o => o.status === 0 && o.paid);
     else if (filter === 'completed') result = result.filter(o => o.status === 1);
     else if (filter === 'failed') result = result.filter(o => o.status === 2);
     if (search.trim()) {
@@ -90,7 +93,7 @@ export default function OrdersScreen({ initialFilter }: { initialFilter?: string
               const active = filter === f.key;
               return (
                 <button key={f.key} onClick={() => setFilter(f.key)}
-                  className="px-4 py-2 rounded-full border text-xs font-semibold transition-all"
+                  className="px-3 py-1 rounded-full border text-xs font-medium transition-all"
                   style={{ borderColor: active ? colors.primary : colors.border, backgroundColor: active ? colors.primary : 'transparent', color: active ? colors.background : colors.textSecondary }}>
                   {f.label}
                 </button>

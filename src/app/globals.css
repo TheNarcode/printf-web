@@ -240,7 +240,6 @@ html[data-direction="back"] ::view-transition-new(root) {
 /* ── Disable native button styles ────────────────────────────────── */
 button {
   cursor: pointer;
-  font: inherit;
   -webkit-tap-highlight-color: transparent;
 }
 

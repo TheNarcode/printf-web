@@ -37,11 +37,11 @@ function CompactSeg({ options, value, onChange, colors }: {
         const active = value === opt.id;
         return (
           <button key={String(opt.id)} onClick={() => onChange(opt.id)}
-            className="flex-1 px-2.5 py-1.5 rounded-md text-xs font-semibold transition-all"
+            className="px-2.5 py-1 rounded-md text-xs font-medium transition-all"
             style={{
               backgroundColor: active ? colors.card : 'transparent',
               color: active ? colors.text : colors.textSecondary,
-              boxShadow: active ? '0 1px 3px rgba(0,0,0,0.12)' : 'none',
+              boxShadow: active ? '0 1px 2px rgba(0,0,0,0.08)' : 'none',
             }}>
             {opt.label}
           </button>
@@ -55,9 +55,9 @@ function SettingRow({ label, children, colors }: {
   label: string; children: React.ReactNode; colors: Record<string, string>;
 }) {
   return (
-    <div className="flex items-center justify-between gap-4 py-2.5 px-4 border-b" style={{ borderColor: colors.borderLight }}>
-      <span className="text-[13px] font-medium flex-shrink-0" style={{ color: colors.text }}>{label}</span>
-      <div className="flex-shrink-0">{children}</div>
+    <div className="flex items-center justify-between gap-3 py-3 px-3 border-b" style={{ borderColor: colors.borderLight }}>
+      <span className="text-sm font-medium flex-shrink-0" style={{ color: colors.text }}>{label}</span>
+      <div className="flex-shrink-0 flex justify-end">{children}</div>
     </div>
   );
 }
@@ -292,16 +292,16 @@ export default function SettingsScreen() {
             </div>
 
             {/* Options */}
-            <div className="w-full md:w-[300px] flex-shrink-0 flex flex-col">
+            <div className="w-full md:w-[320px] flex-shrink-0 flex flex-col">
               <div className="flex items-center mb-1.5 px-0.5 min-h-[28px]">
                 <span className="text-[9px] font-bold tracking-widest uppercase" style={{ color: colors.textMuted }}>OPTIONS</span>
               </div>
               <div className="flex-1 rounded-xl border flex flex-col" style={{ backgroundColor: colors.card, borderColor: colors.border }}>
                 <SettingRow label="Copies" colors={colors}>
-                  <div className="flex items-center rounded-lg border overflow-hidden" style={{ borderColor: colors.border }}>
-                    <button onClick={() => update('copies', Math.max(1, settings.copies - 1))} className="w-9 h-9 flex items-center justify-center hover:opacity-70"><Minus size={14} color={colors.text} strokeWidth={2} /></button>
-                    <div className="w-9 h-9 flex items-center justify-center text-sm font-semibold border-x" style={{ backgroundColor: colors.surface, color: colors.text, borderColor: colors.border }}>{settings.copies}</div>
-                    <button onClick={() => update('copies', settings.copies + 1)} className="w-9 h-9 flex items-center justify-center hover:opacity-70"><Plus size={14} color={colors.text} strokeWidth={2} /></button>
+                  <div className="flex items-center rounded-md border overflow-hidden" style={{ borderColor: colors.border }}>
+                    <button onClick={() => update('copies', Math.max(1, settings.copies - 1))} className="w-8 h-7 flex items-center justify-center hover:opacity-70"><Minus size={12} color={colors.text} strokeWidth={2} /></button>
+                    <div className="w-8 h-7 flex items-center justify-center text-xs font-semibold border-x" style={{ backgroundColor: colors.surface, color: colors.text, borderColor: colors.border }}>{settings.copies}</div>
+                    <button onClick={() => update('copies', settings.copies + 1)} className="w-8 h-7 flex items-center justify-center hover:opacity-70"><Plus size={12} color={colors.text} strokeWidth={2} /></button>
                   </div>
                 </SettingRow>
                 <SettingRow label="Color" colors={colors}>
@@ -317,17 +317,17 @@ export default function SettingsScreen() {
                   <CompactSeg options={PAGES_PER_SHEET_OPTS.map(n => ({ id: n, label: String(n) }))} value={settings.pagesPerSheet} onChange={v => update('pagesPerSheet', v as number)} colors={colors} />
                 </SettingRow>
                 <SettingRow label="Sides" colors={colors}>
-                  <div className="relative">
+                  <div className="relative max-w-full">
                     <button onClick={() => setShowSidesDd(s => !s)}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-[12px] font-medium hover:opacity-80 transition-opacity"
+                      className="flex items-center justify-between gap-2 px-2.5 py-1 rounded-md border text-xs font-medium hover:opacity-80 transition-opacity"
                       style={{ backgroundColor: colors.surface, borderColor: colors.border, color: colors.text }}>
-                      <span className="max-w-[130px] truncate">{sidesLabel}</span>
-                      <ChevronRight size={12} color={colors.textMuted} strokeWidth={2} className={`transition-transform ${showSidesDropdown ? 'rotate-90' : ''}`} />
+                      <span className="truncate">{sidesLabel}</span>
+                      <ChevronRight size={12} color={colors.textMuted} strokeWidth={2} className={`transition-transform flex-shrink-0 ${showSidesDropdown ? 'rotate-90' : ''}`} />
                     </button>
                     {showSidesDropdown && (
-                      <div className="absolute right-0 top-full mt-1 z-50 rounded-xl border shadow-xl overflow-hidden min-w-[190px]" style={{ backgroundColor: colors.card, borderColor: colors.border }}>
+                      <div className="absolute right-0 top-full mt-1 z-50 rounded-lg border shadow-lg overflow-hidden min-w-[150px]" style={{ backgroundColor: colors.card, borderColor: colors.border }}>
                         {SIDES_OPTIONS.map(opt => (
-                          <button key={opt.id} onClick={() => { update('sides', opt.id); setShowSidesDd(false); }} className="w-full px-4 py-2.5 text-[12px] text-left hover:opacity-80"
+                          <button key={opt.id} onClick={() => { update('sides', opt.id); setShowSidesDd(false); }} className="w-full px-3 py-2 text-xs text-left hover:opacity-80"
                             style={{ backgroundColor: settings.sides === opt.id ? colors.primaryBg : 'transparent', color: settings.sides === opt.id ? colors.primary : colors.text, fontWeight: settings.sides === opt.id ? 600 : 400 }}>
                             {opt.label}
                           </button>
@@ -336,17 +336,17 @@ export default function SettingsScreen() {
                     )}
                   </div>
                 </SettingRow>
-                <div className="flex-1 px-4 py-4 border-t" style={{ borderColor: colors.borderLight }}>
+                <div className="flex-1 px-4 py-3.5 border-t" style={{ borderColor: colors.borderLight }}>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-[13px] font-medium" style={{ color: colors.text }}>Page Range</span>
-                    <span className="text-[10px]" style={{ color: colors.textMuted }}>{file.pages} pages total</span>
+                    <span className="text-sm font-medium" style={{ color: colors.text }}>Page Range</span>
+                    <span className="text-xs" style={{ color: colors.textMuted }}>{file.pages} pages total</span>
                   </div>
-                  <input type="text" className="w-full px-3 py-2.5 rounded-lg border text-[12px] outline-none"
+                  <input type="text" className="w-full px-3 py-2.5 rounded-md border text-xs outline-none"
                     style={{ backgroundColor: colors.surface, borderColor: pageRangeError ? colors.danger : colors.border, color: colors.text }}
                     placeholder="All pages — or enter range like 1-5, 8, 11-13"
                     value={settings.pageRange === 'all' ? '' : settings.pageRange}
                     onChange={e => handlePageRangeChange(e.target.value)} />
-                  {pageRangeError && <p className="text-[11px] mt-1.5 font-medium" style={{ color: colors.danger }}>{pageRangeError}</p>}
+                  {pageRangeError && <p className="text-xs mt-1 font-medium" style={{ color: colors.danger }}>{pageRangeError}</p>}
                 </div>
               </div>
             </div>

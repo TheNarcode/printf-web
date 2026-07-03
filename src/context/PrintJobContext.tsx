@@ -22,7 +22,7 @@ import { useAuth } from './AuthContext';
 import { parsePageRange } from '../utils/previewUtils';
 
 const defaultSettings: PrintSettings = {
-  colorMode: 'color',
+  colorMode: 'bw',
   paperSize: 'a4',
   sides: 'single',
   copies: 1,
@@ -172,6 +172,7 @@ export function PrintJobProvider({ children }: { children: React.ReactNode }) {
       totalPrice: total,
       convenienceFee: fee,
       status: 0,
+      paid: false,
       printerNumber: '--',
       printerName: 'Assigned on print',
       totalPages,

@@ -65,4 +65,6 @@ export interface SpendingSummary {
   totalSpent: number;
   orderCount: number;
   pageCount: number;
+  bwPages: number;
+  colorPages: number;
 }

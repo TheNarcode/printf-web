@@ -1,7 +1,7 @@
 'use client';
 
 import React, { memo, useState } from 'react';
-import { FileText, Layers } from 'lucide-react';
+import { FileText, Layers, Palette, Circle } from 'lucide-react';
 import { useTheme } from '../theme/ThemeContext';
 import type { Order } from '../types';
 import { calculateSpending, formatCurrency } from '../utils/formatters';
@@ -20,12 +20,8 @@ const SpendingSummary = memo(({ orders }: SpendingSummaryProps) => {
   const periods: Period[] = ['day', 'week', 'month'];
 
   return (
-    <div className="rounded-[14px] border p-4" style={{ backgroundColor: colors.card, borderColor: colors.border }}>
-      <span className="text-[9px] font-bold tracking-[1px] uppercase mb-3 block" style={{ color: colors.textMuted }}>
-        SPENDING
-      </span>
-
-      <div className="flex rounded-full p-0.5 mb-4" style={{ backgroundColor: colors.surface }}>
+    <div className="rounded-2xl border p-4" style={{ backgroundColor: colors.card, borderColor: colors.border }}>
+      <div className="flex rounded-full p-0.5 mb-5" style={{ backgroundColor: colors.surface }}>
         {periods.map(p => {
           const active = period === p;
           return (
@@ -46,24 +42,46 @@ const SpendingSummary = memo(({ orders }: SpendingSummaryProps) => {
         })}
       </div>
 
-      <div className="text-3xl font-bold mb-0.5" style={{ color: colors.text }}>
-        {formatCurrency(summary.totalSpent)}
-      </div>
-      <div className="text-xs mb-3" style={{ color: colors.textMuted }}>
-        Total spent {periodLabels[period].toLowerCase()}
+      <div className="flex flex-col items-center mb-6">
+        <span className="text-[10px] font-bold tracking-widest uppercase mb-1" style={{ color: colors.textMuted }}>
+          Total Spent
+        </span>
+        <div className="text-4xl font-bold tracking-tight mb-0.5" style={{ color: colors.text }}>
+          {formatCurrency(summary.totalSpent)}
+        </div>
       </div>
 
-      <div className="flex items-center pt-3 border-t" style={{ borderColor: colors.border }}>
-        <div className="flex-1 flex items-center justify-center gap-1">
-          <FileText size={12} color={colors.textMuted} strokeWidth={1.5} />
-          <span className="text-sm font-semibold" style={{ color: colors.text }}>{summary.orderCount}</span>
-          <span className="text-xs" style={{ color: colors.textMuted }}>orders</span>
+      <div className="grid grid-cols-2 gap-3">
+        <div className="rounded-xl border p-3 flex flex-col items-center" style={{ backgroundColor: colors.surface, borderColor: colors.border }}>
+          <div className="flex items-center gap-1.5 mb-1">
+            <FileText size={12} color={colors.textMuted} strokeWidth={2} />
+            <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: colors.textMuted }}>Orders</span>
+          </div>
+          <span className="text-xl font-bold" style={{ color: colors.text }}>{summary.orderCount}</span>
         </div>
-        <div className="w-px h-4.5" style={{ backgroundColor: colors.border }} />
-        <div className="flex-1 flex items-center justify-center gap-1">
-          <Layers size={12} color={colors.textMuted} strokeWidth={1.5} />
-          <span className="text-sm font-semibold" style={{ color: colors.text }}>{summary.pageCount}</span>
-          <span className="text-xs" style={{ color: colors.textMuted }}>pages</span>
+
+        <div className="rounded-xl border p-3 flex flex-col items-center" style={{ backgroundColor: colors.surface, borderColor: colors.border }}>
+          <div className="flex items-center gap-1.5 mb-1">
+            <Layers size={12} color={colors.textMuted} strokeWidth={2} />
+            <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: colors.textMuted }}>Pages</span>
+          </div>
+          <span className="text-xl font-bold" style={{ color: colors.text }}>{summary.pageCount}</span>
+        </div>
+
+        <div className="rounded-xl border p-3 flex flex-col items-center" style={{ backgroundColor: colors.surface, borderColor: colors.border }}>
+          <div className="flex items-center gap-1.5 mb-1">
+            <Circle size={12} color={colors.textMuted} strokeWidth={2} />
+            <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: colors.textMuted }}>B&W</span>
+          </div>
+          <span className="text-xl font-bold" style={{ color: colors.text }}>{summary.bwPages}</span>
+        </div>
+
+        <div className="rounded-xl border p-3 flex flex-col items-center" style={{ backgroundColor: colors.surface, borderColor: colors.border }}>
+          <div className="flex items-center gap-1.5 mb-1">
+            <Palette size={12} color={colors.textMuted} strokeWidth={2} />
+            <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: colors.textMuted }}>Color</span>
+          </div>
+          <span className="text-xl font-bold" style={{ color: colors.text }}>{summary.colorPages}</span>
         </div>
       </div>
     </div>

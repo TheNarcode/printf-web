@@ -1,4 +1,5 @@
 import { initializeApp, getApps, type FirebaseApp } from 'firebase/app';
+import { getAuth, type Auth } from 'firebase/auth';
 import { getMessaging, getToken, onMessage, type Messaging } from 'firebase/messaging';
 
 /**
@@ -27,6 +28,7 @@ const firebaseConfig = {
 const VAPID_KEY = process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY;
 
 let app: FirebaseApp | null = null;
+let auth: Auth | null = null;
 let messaging: Messaging | null = null;
 
 function isFirebaseConfigured(): boolean {
@@ -46,6 +48,20 @@ export function initFirebase(): FirebaseApp | null {
   }
   app = initializeApp(firebaseConfig);
   return app;
+}
+
+export function getFirebaseAuth(): Auth | null {
+  if (typeof window === 'undefined') return null;
+  if (!isFirebaseConfigured()) return null;
+  if (auth) return auth;
+  const fbApp = initFirebase();
+  if (!fbApp) return null;
+  try {
+    auth = getAuth(fbApp);
+    return auth;
+  } catch {
+    return null;
+  }
 }
 
 export function getFirebaseMessaging(): Messaging | null {
