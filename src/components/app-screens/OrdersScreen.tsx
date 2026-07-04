@@ -6,7 +6,7 @@ import { usePrintJob } from '../../context/PrintJobContext';
 import Header from '../Header';
 import OrderCard from '../OrderCard';
 import Btn from '../Btn';
-import { useAppNav } from '../AppNavigator';
+import { useAppNav } from '../../app/dashboard/layout';
 import { usePayOrder } from '../../hooks/usePayOrder';
 import type { Order } from '../../types';
 
@@ -70,7 +70,7 @@ export default function OrdersScreen({ initialFilter }: { initialFilter?: string
   }, [push, payOrder]);
 
   return (
-    <div className="h-full flex flex-col overflow-hidden" style={{ backgroundColor: colors.background }}>
+    <div className="h-[100dvh] flex flex-col overflow-hidden" style={{ backgroundColor: colors.background }}>
       <Header title="Orders" showBack onBack={pop}
         rightElement={
           <button onClick={handleRefresh} disabled={refreshing} className="p-2 transition-opacity hover:opacity-70" aria-label="Refresh">
@@ -78,28 +78,30 @@ export default function OrdersScreen({ initialFilter }: { initialFilter?: string
           </button>
         }
       />
+      <div className="shrink-0 px-5 pt-4 pb-2 w-full max-w-2xl mx-auto">
+        <h1 className="text-3xl font-bold tracking-tight mb-1" style={{ color: colors.text, letterSpacing: '-0.3px' }}>Orders</h1>
+        <p className="text-sm font-medium mb-5" style={{ color: colors.textSecondary }}>Manage and track your print jobs.</p>
+        <div className="flex items-center gap-2.5 px-3.5 py-3 rounded-xl border mb-3.5" style={{ backgroundColor: colors.surface, borderColor: colors.border }}>
+          <Search size={18} color={colors.textMuted} strokeWidth={2} />
+          <input type="text" placeholder="Search orders by file name..." value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="flex-1 bg-transparent border-none outline-none text-sm font-medium" style={{ color: colors.text }} />
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {FILTERS.map(f => {
+            const active = filter === f.key;
+            return (
+              <button key={f.key} onClick={() => setFilter(f.key)}
+                className="px-3 py-1 rounded-full border text-xs font-medium transition-all"
+                style={{ borderColor: active ? colors.primary : colors.border, backgroundColor: active ? colors.primary : 'transparent', color: active ? colors.background : colors.textSecondary }}>
+                {f.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
       <main className="flex-1 overflow-y-auto pb-10">
-        <div className="max-w-2xl mx-auto px-5 pt-4">
-          <h1 className="text-3xl font-bold tracking-tight mb-1" style={{ color: colors.text, letterSpacing: '-0.3px' }}>Orders</h1>
-          <p className="text-sm font-medium mb-5" style={{ color: colors.textSecondary }}>Manage and track your print jobs.</p>
-          <div className="flex items-center gap-2.5 px-3.5 py-3 rounded-xl border mb-3.5" style={{ backgroundColor: colors.surface, borderColor: colors.border }}>
-            <Search size={18} color={colors.textMuted} strokeWidth={2} />
-            <input type="text" placeholder="Search orders by file name..." value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="flex-1 bg-transparent border-none outline-none text-sm font-medium" style={{ color: colors.text }} />
-          </div>
-          <div className="flex flex-wrap gap-2 mb-5">
-            {FILTERS.map(f => {
-              const active = filter === f.key;
-              return (
-                <button key={f.key} onClick={() => setFilter(f.key)}
-                  className="px-3 py-1 rounded-full border text-xs font-medium transition-all"
-                  style={{ borderColor: active ? colors.primary : colors.border, backgroundColor: active ? colors.primary : 'transparent', color: active ? colors.background : colors.textSecondary }}>
-                  {f.label}
-                </button>
-              );
-            })}
-          </div>
+        <div className="max-w-2xl mx-auto px-5 pt-2">
           {filteredOrders.length === 0 ? (
             <div className="py-8 flex flex-col items-center gap-1.5">
               <span className="text-base font-semibold" style={{ color: colors.text }}>No orders found</span>

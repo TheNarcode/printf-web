@@ -8,7 +8,7 @@ import { usePrintJob } from '../../context/PrintJobContext';
 import { CustomAlertAPI } from '../../context/AlertContext';
 import Header from '../Header';
 import SpendingSummary from '../SpendingSummary';
-import { useAppNav } from '../AppNavigator';
+import { useAppNav } from '../../app/dashboard/layout';
 import type { ThemeMode } from '../../types';
 
 const THEME_OPTIONS: { key: ThemeMode; label: string; Icon: typeof Sun }[] = [

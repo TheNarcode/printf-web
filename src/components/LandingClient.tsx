@@ -1,13 +1,13 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { useTransitionRouter } from 'next-view-transitions';
+import { useRouter } from 'next/navigation';
 import { Moon, Sun } from 'lucide-react';
 import { useTheme } from '../theme/ThemeContext';
 
 export default function LandingClient() {
   const { colors, isDark, setMode, mode } = useTheme();
-  const router = useTransitionRouter();
+  const router = useRouter();
   const pageRef = useRef<HTMLDivElement>(null);
   const [scrollY, setScrollY] = useState(0);
 

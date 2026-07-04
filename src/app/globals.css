@@ -126,54 +126,7 @@ body {
   50% { opacity: 0.5; }
 }
 
-/* ── Native View Transitions (page-level routing) ───────────────── */
-::view-transition-group(root) {
-  animation-duration: 0s;
-}
-::view-transition-old(root),
-::view-transition-new(root) {
-  mix-blend-mode: normal;
-  display: block;
-  height: 100%;
-  width: 100%;
-  object-fit: cover;
-}
 
-/* Default: Push forward (new page slides in from right) */
-::view-transition-old(root) {
-  animation: vt-push-out-left 480ms cubic-bezier(0.4, 0.0, 0.2, 1) both;
-}
-::view-transition-new(root) {
-  animation: vt-push-in-right 480ms cubic-bezier(0.4, 0.0, 0.2, 1) both;
-  z-index: 2;
-}
-
-/* Back Navigation: Pop (old page slides out to right, new slides in from left) */
-html[data-direction="back"] ::view-transition-old(root) {
-  animation: vt-pop-out-right 480ms cubic-bezier(0.4, 0.0, 0.2, 1) both;
-  z-index: 2;
-}
-html[data-direction="back"] ::view-transition-new(root) {
-  animation: vt-pop-in-left 480ms cubic-bezier(0.4, 0.0, 0.2, 1) both;
-  z-index: 1;
-}
-
-@keyframes vt-push-in-right {
-  from { transform: translateX(100%); }
-  to   { transform: translateX(0); }
-}
-@keyframes vt-push-out-left {
-  from { transform: translateX(0); opacity: 1; }
-  to   { transform: translateX(-30%); opacity: 0.5; }
-}
-@keyframes vt-pop-in-left {
-  from { transform: translateX(-30%); opacity: 0.5; }
-  to   { transform: translateX(0); opacity: 1; }
-}
-@keyframes vt-pop-out-right {
-  from { transform: translateX(0); }
-  to   { transform: translateX(100%); }
-}
 
 .animate-fade-in   { animation: fadeIn 0.4s ease-out; }
 .animate-slide-up  { animation: slideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1); }

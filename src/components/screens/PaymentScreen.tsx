@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import { Lock, FileText } from 'lucide-react';
 import { useTheme } from '../../theme/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
 import { usePrintJob } from '../../context/PrintJobContext';
-import { useAppNav } from '../AppNavigator';
+import { useAppNav } from '../../app/dashboard/layout';
 import { CustomAlertAPI } from '../../context/AlertContext';
 import Header from '../Header';
 import Btn from '../Btn';
@@ -22,10 +22,18 @@ export default function PaymentScreen() {
   const { getValidToken, user } = useAuth();
   const { pop } = useAppNav();
   const router = useRouter();
+  
+  const { items, fee, total } = useMemo(() => getOrderSummary(), [getOrderSummary]);
+
+  useEffect(() => {
+    if (items.length === 0) {
+      router.replace('/dashboard/upload');
+    }
+  }, [items.length, router]);
+  
   const [isPaying, setIsPaying] = useState(false);
   const [statusText, setStatusText] = useState('');
 
-  const { items, fee, total } = useMemo(() => getOrderSummary(), [getOrderSummary]);
 
   const handlePay = useCallback(async () => {
     setIsPaying(true);
@@ -85,9 +93,13 @@ export default function PaymentScreen() {
     }
   }, [items, files, getValidToken, user, refreshOrders, resetFlow, router]);
 
+  const handleBack = useCallback(() => {
+    pop();
+  }, [pop]);
+
   return (
-    <div className="h-full flex flex-col overflow-hidden" style={{ backgroundColor: colors.background }}>
-      <Header title="Order Summary" subtitle="Step 3 of 3" showBack onBack={pop} />
+    <div className="h-[100dvh] flex flex-col overflow-hidden" style={{ backgroundColor: colors.background }}>
+      <Header title="Payment" subtitle="Step 3 of 3" showBack onBack={handleBack} />
 
       <main className="flex-1 overflow-y-auto pb-8">
         <div className="max-w-3xl mx-auto px-5 pt-5">

@@ -6,7 +6,7 @@ import { usePrintJob } from '../../context/PrintJobContext';
 import Header from '../Header';
 import { formatCurrency, formatDateTime } from '../../utils/formatters';
 import { parsePageRange } from '../../utils/previewUtils';
-import { useAppNav } from '../AppNavigator';
+import { useAppNav } from '../../app/dashboard/layout';
 import { usePayOrder } from '../../hooks/usePayOrder';
 import Btn from '../Btn';
 
@@ -51,7 +51,7 @@ export default function OrderDetailScreen({ orderId }: { orderId: string }) {
   if (!order) {
     if (fetchAttempts >= 3) {
       return (
-        <div className="h-full flex flex-col" style={{ backgroundColor: screenBg }}>
+        <div className="h-[100dvh] flex flex-col" style={{ backgroundColor: screenBg }}>
           <Header title="Order Details" showBack onBack={pop} />
           <div className="flex-1 flex items-center justify-center">
             <p className="text-sm" style={{ color: colors.textMuted }}>Order not found</p>
@@ -61,7 +61,7 @@ export default function OrderDetailScreen({ orderId }: { orderId: string }) {
     }
 
     return (
-      <div className="h-full flex flex-col" style={{ backgroundColor: screenBg }}>
+      <div className="h-[100dvh] flex flex-col" style={{ backgroundColor: screenBg }}>
         <Header title="Order Details" showBack onBack={pop} />
         <div className="flex-1 flex flex-col items-center justify-center gap-3">
           <div className="w-6 h-6 rounded-full border-2 border-t-transparent animate-spin" style={{ borderColor: colors.primary }} />
@@ -79,7 +79,7 @@ export default function OrderDetailScreen({ orderId }: { orderId: string }) {
   const statusBg = isCollected ? colors.collectedBg : isFailed ? colors.dangerBg : isDone ? colors.successBg : colors.warningBg;
 
   return (
-    <div className="h-full flex flex-col overflow-hidden" style={{ backgroundColor: screenBg }}>
+    <div className="h-[100dvh] flex flex-col overflow-hidden" style={{ backgroundColor: screenBg }}>
       <Header title="Order Details" showBack onBack={pop} />
       <main className="flex-1 overflow-y-auto py-4 px-4">
         <div className="max-w-[480px] mx-auto">

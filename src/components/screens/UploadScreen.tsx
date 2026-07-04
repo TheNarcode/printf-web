@@ -3,7 +3,7 @@
 import React, { useCallback, useState } from 'react';
 import { useTheme } from '../../theme/ThemeContext';
 import { usePrintJob } from '../../context/PrintJobContext';
-import { useAppNav } from '../AppNavigator';
+import { useAppNav } from '../../app/dashboard/layout';
 import { useAuth } from '../../context/AuthContext';
 import Header from '../Header';
 import FileDropZone from '../FileDropZone';
@@ -56,7 +56,7 @@ export default function UploadScreen() {
   }, [files, getValidToken, push]);
 
   return (
-    <div className="h-full flex flex-col overflow-hidden" style={{ backgroundColor: colors.background }}>
+    <div className="h-[100dvh] flex flex-col overflow-hidden" style={{ backgroundColor: colors.background }}>
       <Header title="Upload Files" subtitle="Step 1 of 3" showBack onBack={handleBack} />
 
       <main className="flex-1 overflow-y-auto pb-8">

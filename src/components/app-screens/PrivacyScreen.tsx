@@ -2,7 +2,7 @@
 import React from 'react';
 import { useTheme } from '../../theme/ThemeContext';
 import Header from '../Header';
-import { useAppNav } from '../AppNavigator';
+import { useAppNav } from '../../app/dashboard/layout';
 
 export default function PrivacyScreen() {
   const { colors } = useTheme();

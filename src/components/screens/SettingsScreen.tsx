@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { useTheme } from '../../theme/ThemeContext';
 import { usePrintJob } from '../../context/PrintJobContext';
-import { useAppNav } from '../AppNavigator';
+import { useAppNav } from '../../app/dashboard/layout';
 import Header from '../Header';
 import Btn from '../Btn';
 import type { PrintSettings, UploadedFile } from '../../types';
@@ -16,6 +16,7 @@ import { formatFileSize } from '../../utils/formatters';
 import {
   parsePageRange, getSheetPages, getTotalSheets, generatePdfThumbnails,
 } from '../../utils/previewUtils';
+import { useRouter } from 'next/navigation';
 
 const A4_RATIO = 297 / 210;
 const SIDES_OPTIONS = [
@@ -116,6 +117,13 @@ export default function SettingsScreen() {
   const { colors } = useTheme();
   const { files, fileSettings, updateFileSettings } = usePrintJob();
   const { push, pop } = useAppNav();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (files.length === 0) {
+      router.replace('/dashboard');
+    }
+  }, [files.length, router]);
 
   const [selectedIdx, setSelectedIdx]       = useState(0);
   const [showSidesDropdown, setShowSidesDd] = useState(false);
@@ -212,13 +220,13 @@ export default function SettingsScreen() {
   const fsPaperH = fsPaperW * paperRatio;
 
   return (
-    <div className="h-full flex flex-col overflow-hidden" style={{ backgroundColor: colors.background }}>
+    <div className="h-[100dvh] flex flex-col overflow-hidden" style={{ backgroundColor: colors.background }}>
       <Header title="Print Settings" subtitle="Step 2 of 3" showBack onBack={pop} />
 
-      <main className="flex-1 overflow-y-auto pb-8 relative">
+      <main className="flex-1 overflow-y-auto pb-4 relative">
 
         {/* File Carousel */}
-        <div className="page-container-wide px-5 pt-4">
+        <div className="page-container-wide px-5 pt-2">
           <div className="flex items-center gap-2">
             <button onClick={() => scrollTo(Math.max(0, selectedIdx - 1))} disabled={selectedIdx === 0 || files.length <= 1}
               className="hidden md:flex flex-shrink-0 w-7 h-7 items-center justify-center rounded-full border shadow-sm transition-all disabled:opacity-20 hover:opacity-80"
@@ -277,7 +285,7 @@ export default function SettingsScreen() {
                 </div>
               </div>
               <div className="flex-1 rounded-xl border overflow-hidden flex flex-col" style={{ backgroundColor: colors.surface, borderColor: colors.border }}>
-                <div className="flex-1 flex flex-col items-center justify-center py-6 gap-4">
+                <div className="flex-1 flex flex-col items-center justify-center py-3 gap-3">
                   <PreviewSheet sheetIndex={currentSheet} selectedPages={selectedPages} pps={pps} thumbnails={thumbnails} thumbLoading={thumbLoading} isImage={isImage} isBW={isBW} file={file} paperW={PAPER_W} paperH={paperH} />
                   <div className="flex items-center gap-3">
                     {totalSheets > 1 && <button onClick={() => setCurrentSheet(s => Math.max(0, s - 1))} disabled={currentSheet === 0} className="p-1.5 rounded transition-opacity disabled:opacity-30 hover:opacity-70"><ChevronLeft size={16} color={colors.textSecondary} strokeWidth={2} /></button>}

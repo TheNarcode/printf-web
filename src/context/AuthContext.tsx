@@ -13,7 +13,7 @@ import type { UserProfile } from '../types';
 import { registerFCMToken, setupForegroundListener } from '../services/notifications';
 import { clearAllStorage } from '../services/storage';
 import { getFirebaseAuth } from '../services/firebase';
-import { signInWithRedirect, GoogleAuthProvider, signOut as firebaseSignOut, onAuthStateChanged, getRedirectResult } from 'firebase/auth';
+import { signInWithRedirect, signInWithPopup, GoogleAuthProvider, signOut as firebaseSignOut, onAuthStateChanged, getRedirectResult } from 'firebase/auth';
 
 interface AuthContextValue {
   user: UserProfile | null;
@@ -116,9 +116,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!auth) return;
     try {
       const provider = new GoogleAuthProvider();
-      await signInWithRedirect(auth, provider);
+      await signInWithPopup(auth, provider);
     } catch (error) {
-      console.error('Sign in redirect failed:', error);
+      console.error('Sign in popup failed:', error);
     }
   }, []);
 

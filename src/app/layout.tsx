@@ -18,24 +18,22 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <ViewTransitions>
-      <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`} suppressHydrationWarning>
-        <head>
-          {/* Razorpay JS SDK */}
-          <script src="https://checkout.razorpay.com/v1/checkout.js" async />
-        </head>
-        <body className="min-h-dvh flex flex-col" style={{ backgroundColor: 'var(--color-background)' }}>
-          <ThemeProvider>
-            <AlertProvider>
-              <AuthProvider>
-                <PrintJobProvider>
-                  {children}
-                </PrintJobProvider>
-              </AuthProvider>
-            </AlertProvider>
-          </ThemeProvider>
-        </body>
-      </html>
-    </ViewTransitions>
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`} suppressHydrationWarning>
+      <head>
+        {/* Razorpay JS SDK */}
+        <script src="https://checkout.razorpay.com/v1/checkout.js" async />
+      </head>
+      <body className="min-h-dvh flex flex-col" style={{ backgroundColor: 'var(--color-background)' }}>
+        <ThemeProvider>
+          <AlertProvider>
+            <AuthProvider>
+              <PrintJobProvider>
+                {children}
+              </PrintJobProvider>
+            </AuthProvider>
+          </AlertProvider>
+        </ThemeProvider>
+      </body>
+    </html>
   );
 }
