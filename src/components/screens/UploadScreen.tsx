@@ -60,7 +60,7 @@ export default function UploadScreen() {
       <Header title="Upload Files" subtitle="Step 1 of 3" showBack onBack={handleBack} />
 
       <main className="flex-1 overflow-y-auto pb-8">
-        <div className="page-container px-5 pt-4">
+        <div className="page-container px-6 pt-4">
 
           <FileDropZone onFiles={handleFiles} />
 

@@ -226,7 +226,7 @@ export default function SettingsScreen() {
       <main className="flex-1 overflow-y-auto pb-4 relative">
 
         {/* File Carousel */}
-        <div className="page-container-wide px-5 pt-2">
+        <div className="page-container-wide px-6 pt-2">
           <div className="flex items-center gap-2">
             <button onClick={() => scrollTo(Math.max(0, selectedIdx - 1))} disabled={selectedIdx === 0 || files.length <= 1}
               className="hidden md:flex flex-shrink-0 w-7 h-7 items-center justify-center rounded-full border shadow-sm transition-all disabled:opacity-20 hover:opacity-80"
@@ -270,7 +270,7 @@ export default function SettingsScreen() {
         </div>
 
         {/* Preview + Settings */}
-        <div className="page-container-wide px-5">
+        <div className="page-container-wide px-6">
           <div className="flex flex-col md:flex-row gap-4 md:gap-5 md:items-stretch">
 
             {/* Preview */}
@@ -362,7 +362,7 @@ export default function SettingsScreen() {
         </div>
       </main>
 
-      <div className="flex-shrink-0 px-5 py-3.5 border-t z-30" style={{ backgroundColor: colors.card, borderColor: colors.border }}>
+      <div className="flex-shrink-0 px-6 py-4 border-t z-30" style={{ backgroundColor: colors.card, borderColor: colors.border }}>
         <div className="page-container-wide">
           <Btn variant="solid" size="lg" fullWidth onClick={() => push({ id: 'payment', transition: 'push' })} disabled={!!pageRangeError}>
             Proceed to Payment
@@ -373,7 +373,7 @@ export default function SettingsScreen() {
       {/* Fullscreen preview modal */}
       {showFullscreen && (
         <div className="absolute inset-0 z-[9999] flex flex-col animate-fade-in" style={{ backgroundColor: colors.background }}>
-          <div className="flex items-center justify-between px-5 py-3 border-b" style={{ borderColor: colors.border }}>
+          <div className="flex items-center justify-between px-6 py-3 border-b" style={{ borderColor: colors.border }}>
             <span className="text-sm font-semibold" style={{ color: colors.text }}>Print Preview</span>
             <button onClick={() => setShowFullscreen(false)} className="p-2 hover:opacity-70"><X size={18} color={colors.textMuted} strokeWidth={2} /></button>
           </div>

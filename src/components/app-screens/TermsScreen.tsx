@@ -12,7 +12,7 @@ export default function TermsScreen() {
       <Header title="Terms & Conditions" showBack onBack={pop} />
       <main className="flex-1 overflow-y-auto">
         <div
-          className="max-w-2xl mx-auto px-5 py-6 prose prose-sm dark:prose-invert"
+          className="max-w-2xl mx-auto px-6 py-6 prose prose-sm dark:prose-invert"
           style={{ color: colors.textSecondary, fontSize: 14, lineHeight: 1.75 }}
           dangerouslySetInnerHTML={{ __html: termsHTML }}
         />

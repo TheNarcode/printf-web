@@ -78,8 +78,8 @@ export default function OrdersScreen({ initialFilter }: { initialFilter?: string
           </button>
         }
       />
-      <div className="shrink-0 px-5 pt-4 pb-2 w-full max-w-2xl mx-auto">
-        <h1 className="text-3xl font-bold tracking-tight mb-1" style={{ color: colors.text, letterSpacing: '-0.3px' }}>Orders</h1>
+      <div className="shrink-0 px-6 pt-4 pb-2 w-full max-w-2xl mx-auto">
+        <h1 className="text-2xl font-bold tracking-tight mb-0.5" style={{ color: colors.text }}>Orders</h1>
         <p className="text-sm font-medium mb-5" style={{ color: colors.textSecondary }}>Manage and track your print jobs.</p>
         <div className="flex items-center gap-2.5 px-3.5 py-3 rounded-xl border mb-3.5" style={{ backgroundColor: colors.surface, borderColor: colors.border }}>
           <Search size={18} color={colors.textMuted} strokeWidth={2} />
@@ -101,7 +101,7 @@ export default function OrdersScreen({ initialFilter }: { initialFilter?: string
         </div>
       </div>
       <main className="flex-1 overflow-y-auto pb-10">
-        <div className="max-w-2xl mx-auto px-5 pt-2">
+        <div className="max-w-2xl mx-auto px-6 pt-2">
           {filteredOrders.length === 0 ? (
             <div className="py-8 flex flex-col items-center gap-1.5">
               <span className="text-base font-semibold" style={{ color: colors.text }}>No orders found</span>

@@ -78,9 +78,9 @@ export default function HomeScreen() {
       />
 
       <main className="flex-1 overflow-y-auto pb-20">
-        <div className="page-container px-5 pt-4">
+        <div className="page-container px-6 pt-4">
           <div className="mb-6">
-            <h1 className="text-2xl font-bold tracking-tight mb-0.5" style={{ color: colors.text, letterSpacing: '-0.5px', fontFamily: 'var(--font-geist-sans), sans-serif' }}>
+            <h1 className="text-2xl font-bold tracking-tight mb-0.5" style={{ color: colors.text, letterSpacing: '-0.5px' }}>
               {getGreeting()}, {user?.name ? user.name.split(' ')[0] : 'there'}.
             </h1>
           </div>

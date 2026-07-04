@@ -81,7 +81,7 @@ export default function OrderDetailScreen({ orderId }: { orderId: string }) {
   return (
     <div className="h-[100dvh] flex flex-col overflow-hidden" style={{ backgroundColor: screenBg }}>
       <Header title="Order Details" showBack onBack={pop} />
-      <main className="flex-1 overflow-y-auto py-4 px-4">
+      <main className="flex-1 overflow-y-auto py-4 px-6">
         <div className="max-w-[480px] mx-auto">
           <div className="h-3 overflow-hidden flex" style={{ backgroundColor: screenBg }}>
             {Array.from({ length: 60 }).map((_, i) => (

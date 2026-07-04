@@ -37,7 +37,7 @@ export default function ProfileScreen() {
       <Header title="Profile" showBack onBack={pop} />
 
       <main className="flex-1 overflow-y-auto pb-10">
-        <div className="page-container px-5 py-4 flex flex-col gap-6">
+        <div className="page-container px-6 py-4 flex flex-col gap-6">
 
           {/* Profile card */}
           <div className="rounded-2xl border p-4" style={{ backgroundColor: colors.card, borderColor: colors.border }}>

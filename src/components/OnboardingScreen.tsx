@@ -38,11 +38,21 @@ export default function OnboardingScreen() {
   const { colors, isDark, setMode } = useTheme();
   const router = useRouter();
   
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [slides, setSlides] = useState(() => SLIDES.map((s, i) => ({ ...s, id: i })));
+  const [isAnimating, setIsAnimating] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const nextSlide = () => {
-    setCurrentIndex(prev => (prev + 1) % SLIDES.length);
+    setIsAnimating(true);
+    setTimeout(() => {
+      setIsAnimating(false);
+      setSlides(prev => {
+        const newSlides = [...prev];
+        const first = newSlides.shift();
+        if (first) newSlides.push(first);
+        return newSlides;
+      });
+    }, 500);
   };
 
   useEffect(() => {
@@ -67,58 +77,39 @@ export default function OnboardingScreen() {
   }
 
   const handleDotClick = (index: number) => {
-    setCurrentIndex(index);
+    if (isAnimating) return;
+    setSlides(prev => {
+      const newSlides = [...prev];
+      while (newSlides[0].id !== index) {
+        newSlides.push(newSlides.shift()!);
+      }
+      return newSlides;
+    });
     if (timeoutRef.current) clearInterval(timeoutRef.current);
     timeoutRef.current = setInterval(nextSlide, 5000);
   };
 
   return (
     <>
-      <style>{`
-        @keyframes float1 {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          33% { transform: translate(-100px, 120px) scale(1.1); }
-          66% { transform: translate(80px, -80px) scale(0.9); }
-        }
-        @keyframes float2 {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          33% { transform: translate(120px, -100px) scale(0.9); }
-          66% { transform: translate(-80px, 80px) scale(1.1); }
-        }
-      `}</style>
-      
       <div className="h-[100dvh] flex flex-col overflow-hidden relative" style={{ backgroundColor: colors.background }}>
         
-        {/* Background Decor */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+        {/* Natural Floating Orbs Background */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
           <div
-            className="absolute rounded-full filter blur-[60px]"
+            className="absolute top-[5%] left-[-5%] w-[30vh] h-[30vh] rounded-full"
             style={{
-              width: 600, height: 600,
-              top: -150, right: -200,
-              backgroundColor: colors.primary,
-              opacity: 0.15,
-              animation: 'float1 18s ease-in-out infinite'
+              backgroundColor: colors.textSecondary,
+              opacity: 0.05, 
+              animation: 'orb1 12s ease-in-out infinite alternate',
             }}
           />
+
           <div
-            className="absolute rounded-full filter blur-[80px]"
+            className="absolute top-[40%] right-[5%] w-[35vh] h-[35vh] rounded-full"
             style={{
-              width: 500, height: 500,
-              bottom: 0, left: -250,
-              backgroundColor: colors.primary,
-              opacity: 0.12,
-              animation: 'float2 15s ease-in-out infinite'
-            }}
-          />
-          <div
-            className="absolute rounded-full filter blur-[100px]"
-            style={{
-              width: 400, height: 400,
-              top: '30%', left: '20%',
-              backgroundColor: colors.primary,
-              opacity: 0.08,
-              animation: 'float1 20s ease-in-out infinite reverse'
+              backgroundColor: colors.text,
+              opacity: 0.05,
+              animation: 'orb3 13s ease-in-out infinite alternate',
             }}
           />
         </div>
@@ -138,18 +129,17 @@ export default function OnboardingScreen() {
           }
         />
 
-        {/* Carousel — Sliding implementation */}
+        {/* Carousel — Infinite Sliding implementation */}
         <div className="flex-1 z-10 flex flex-col justify-center overflow-hidden" style={{ paddingBottom: 160 }}>
           
           <div className="w-full overflow-hidden">
             <div 
-              className="flex transition-transform duration-500 ease-in-out"
-              style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+              className={`flex w-full ${isAnimating ? 'transition-transform duration-500 ease-in-out -translate-x-full' : 'translate-x-0'}`}
             >
-              {SLIDES.map((slide, index) => {
+              {slides.map((slide) => {
                 const src = (slide as any).lottie || (isDark ? (slide as any).lottieDark : (slide as any).lottieLight);
                 return (
-                  <div key={index} className="w-full flex-shrink-0 flex flex-col items-center px-8">
+                  <div key={slide.id} className="w-full shrink-0 flex flex-col items-center px-8">
                     {/* Animation */}
                     <div className="w-full max-w-[320px] aspect-square flex items-center justify-center">
                       {src && (
@@ -167,7 +157,7 @@ export default function OnboardingScreen() {
                       {slide.title && (
                         <h1
                           className="text-[26px] leading-tight font-black tracking-[-0.5px]"
-                          style={{ color: colors.text, fontFamily: 'var(--font-geist-sans), sans-serif' }}
+                          style={{ color: colors.text }}
                         >
                           {slide.title}
                         </h1>
@@ -175,7 +165,7 @@ export default function OnboardingScreen() {
                       {slide.subtitle && (
                         <p
                           className="text-[14px] leading-snug mt-1.5"
-                          style={{ color: colors.textSecondary, fontFamily: 'var(--font-geist-sans), sans-serif' }}
+                          style={{ color: colors.textSecondary }}
                         >
                           {slide.subtitle}
                         </p>
@@ -189,19 +179,23 @@ export default function OnboardingScreen() {
 
           {/* Dots */}
           <div className="flex justify-center gap-2.5 mt-8">
-            {SLIDES.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => handleDotClick(index)}
-                className="w-1.5 h-1.5 rounded-full transition-all duration-500 ease-out"
-                style={{
-                  backgroundColor: index === currentIndex ? colors.primary : colors.textMuted,
-                  opacity: index === currentIndex ? 1 : 0.3,
-                  transform: index === currentIndex ? 'scale(1.5)' : 'scale(1)',
-                }}
-                aria-label={`Go to slide ${index + 1}`}
-              />
-            ))}
+            {SLIDES.map((_, index) => {
+              const activeId = isAnimating && slides.length > 1 ? slides[1].id : slides[0].id;
+              const isActive = index === activeId;
+              return (
+                <button
+                  key={index}
+                  onClick={() => handleDotClick(index)}
+                  className="w-1.5 h-1.5 rounded-full transition-all duration-500 ease-out"
+                  style={{
+                    backgroundColor: isActive ? colors.primary : colors.textMuted,
+                    opacity: isActive ? 1 : 0.3,
+                    transform: isActive ? 'scale(1.5)' : 'scale(1)',
+                  }}
+                  aria-label={`Go to slide ${index + 1}`}
+                />
+              );
+            })}
           </div>
         </div>
 
@@ -230,7 +224,7 @@ export default function OnboardingScreen() {
               ) : (
                 <>
                   <GoogleLogo size={20} />
-                  <span className="text-[15px]" style={{ color: colors.text, fontWeight: 700, fontFamily: 'var(--font-geist-sans), sans-serif' }}>
+                  <span className="text-[15px]" style={{ color: colors.text, fontWeight: 700 }}>
                     Continue with Google
                   </span>
                 </>

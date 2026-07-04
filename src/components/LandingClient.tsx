@@ -25,7 +25,7 @@ export default function LandingClient() {
     <div
       ref={pageRef}
       className="h-[100dvh] overflow-y-auto"
-      style={{ backgroundColor: colors.background, color: colors.text, fontFamily: 'var(--font-geist-sans), sans-serif' }}
+      style={{ backgroundColor: colors.background, color: colors.text }}
     >
       <div className="sticky top-0 z-50 flex items-start justify-center" style={{ paddingTop: scrolled ? 12 : 24 }}>
         <header

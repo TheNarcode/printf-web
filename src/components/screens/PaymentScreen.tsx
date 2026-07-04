@@ -102,7 +102,7 @@ export default function PaymentScreen() {
       <Header title="Payment" subtitle="Step 3 of 3" showBack onBack={handleBack} />
 
       <main className="flex-1 overflow-y-auto pb-8">
-        <div className="max-w-3xl mx-auto px-5 pt-5">
+        <div className="max-w-3xl mx-auto px-6 pt-5">
           <div className="flex flex-col md:flex-row md:gap-6 gap-5">
 
             {/* Files list */}
@@ -171,7 +171,7 @@ export default function PaymentScreen() {
         </div>
       </main>
 
-      <div className="flex-shrink-0 px-5 py-3.5 border-t z-30" style={{ backgroundColor: colors.card, borderColor: colors.border }}>
+      <div className="flex-shrink-0 px-6 py-4 border-t z-30" style={{ backgroundColor: colors.card, borderColor: colors.border }}>
         <div className="max-w-3xl mx-auto">
           <Btn variant="solid" size="lg" fullWidth onClick={handlePay} loading={isPaying}>
             {isPaying ? (statusText || 'Processing…') : `Pay ${formatCurrency(total)}`}
