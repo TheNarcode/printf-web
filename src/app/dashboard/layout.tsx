@@ -101,13 +101,17 @@ function DeepLinkHandler() {
   return null;
 }
 
+import { Suspense } from 'react';
+
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <AppNavigatorProvider>
-      <DeepLinkHandler />
-      <div className="flex-1 flex flex-col relative w-full h-[100dvh] overflow-hidden">
-        {children}
-      </div>
-    </AppNavigatorProvider>
+    <Suspense fallback={null}>
+      <AppNavigatorProvider>
+        <DeepLinkHandler />
+        <div className="flex-1 flex flex-col relative w-full h-[100dvh] overflow-hidden">
+          {children}
+        </div>
+      </AppNavigatorProvider>
+    </Suspense>
   );
 }

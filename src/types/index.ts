@@ -46,11 +46,6 @@ export interface Order {
   paymentRequestId?: string;
 }
 
-export interface OrderTimeline {
-  label: string;
-  time: string;
-  completed: boolean;
-}
 
 export type ThemeMode = 'dark' | 'light' | 'system';
 

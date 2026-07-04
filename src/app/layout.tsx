@@ -5,13 +5,13 @@ import { ThemeProvider } from '../theme/ThemeContext';
 import { AuthProvider } from '../context/AuthContext';
 import { PrintJobProvider } from '../context/PrintJobContext';
 import { AlertProvider } from '../context/AlertContext';
-import { ViewTransitions } from 'next-view-transitions';
+
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
 const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'printf — Print from anywhere',
+  title: 'printf',
   description: 'Upload your documents, customize print settings, and get them printed. Fast and easy.',
   keywords: ['print', 'document printing', 'online print', 'pdf print'],
 };
