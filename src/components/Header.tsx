@@ -55,7 +55,7 @@ export default function Header({ title, subtitle, showBack, onBack, rightElement
 
       <div className="flex items-center gap-2 flex-shrink-0">
         {subtitle && (
-          <span className="text-xs font-medium opacity-60" style={{ color: colors.textMuted }}>
+          <span className="text-[10px] font-medium opacity-60" style={{ color: colors.textMuted }}>
             {subtitle}
           </span>
         )}

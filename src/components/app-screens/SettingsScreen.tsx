@@ -17,7 +17,7 @@ const THEME_OPTIONS: { key: ThemeMode; label: string; Icon: typeof Sun }[] = [
   { key: 'system', label: 'Auto', Icon: Monitor },
 ];
 
-export default function ProfileScreen() {
+export default function SettingsScreen() {
   const { colors, mode, setMode } = useTheme();
   const { user, signOut } = useAuth();
   const { orders } = usePrintJob();
@@ -34,7 +34,7 @@ export default function ProfileScreen() {
 
   return (
     <div className="h-full flex flex-col overflow-hidden" style={{ backgroundColor: colors.background }}>
-      <Header title="Profile" showBack onBack={pop} />
+      <Header title="Settings" showBack onBack={pop} />
 
       <main className="flex-1 overflow-y-auto pb-10">
         <div className="page-container px-6 py-4 flex flex-col gap-6">

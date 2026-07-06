@@ -1,12 +1,11 @@
 'use client';
 
 import React, { useCallback, useMemo, useState } from 'react';
-import { ChevronRight, CheckCircle2, RefreshCw, RefreshCcw, AlertCircle } from 'lucide-react';
+import { ChevronRight, CheckCircle2, RefreshCw, RefreshCcw, AlertCircle, Settings, Banknote } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../theme/ThemeContext';
 import { usePrintJob } from '../../context/PrintJobContext';
 import Header from '../Header';
-import ProfileButton from '../ProfileButton';
 import OrderCard from '../OrderCard';
 import FAB from '../FAB';
 import { useAppNav } from '../../app/dashboard/layout';
@@ -47,10 +46,10 @@ export default function HomeScreen() {
   }), [orders]);
 
   const stats = [
-    { key: 'payment_pending', Icon: AlertCircle,   count: counts.paymentPending, label: 'Payment Pending', isDanger: true  },
+    { key: 'payment_pending', Icon: Banknote,      count: counts.paymentPending, label: 'Payment Pending', isDanger: false },
     { key: 'in_progress',     Icon: RefreshCcw,    count: counts.inProgress,     label: 'In Progress',     isDanger: false },
     { key: 'completed',       Icon: CheckCircle2,  count: counts.completed,      label: 'To Collect',      isDanger: false },
-    { key: 'failed',          Icon: AlertCircle,   count: counts.failed,         label: 'Failed',          isDanger: true  },
+    { key: 'failed',          Icon: AlertCircle,   count: counts.failed,         label: 'Failed',          isDanger: false },
   ];
 
   return (
@@ -68,11 +67,13 @@ export default function HomeScreen() {
             >
               <RefreshCw size={16} color={colors.textMuted} className={refreshing ? 'animate-spin' : ''} />
             </button>
-            <ProfileButton
-              userName={user?.name}
-              userPhoto={user?.photo}
-              onPress={() => push({ id: 'profile', transition: 'modal' })}
-            />
+            <button
+              onClick={() => push({ id: 'settings', transition: 'modal' })}
+              className="p-2 transition-opacity hover:opacity-70"
+              aria-label="Settings"
+            >
+              <Settings size={20} color={colors.text} />
+            </button>
           </div>
         }
       />

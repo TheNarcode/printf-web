@@ -114,11 +114,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signInWithGoogle = useCallback(async () => {
     const auth = getFirebaseAuth();
     if (!auth) return;
+    
+    setIsLoading(true);
     try {
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Sign in popup failed:', error);
+      
+      let message = 'An error occurred during Google Sign-In. Please try again.';
+      if (error.code === 'auth/popup-closed-by-user' || error.message?.includes('closed')) {
+        message = 'Sign in was cancelled.';
+      } else if (error.code === 'auth/cancelled-popup-request') {
+        message = 'Sign in is already in progress.';
+      }
+      
+      import('./AlertContext').then(({ CustomAlertAPI }) => {
+        CustomAlertAPI.alert('Login Failed', message);
+      });
+    } finally {
+      setIsLoading(false);
     }
   }, []);
 

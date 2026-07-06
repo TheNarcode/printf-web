@@ -11,26 +11,25 @@ import Header from './Header';
 
 const SLIDES = [
   {
-    title: '',
-    subtitle: '',
-    lottieLight: '/welcome(light).lottie',
-    lottieDark: '/welcome(dark).lottie',
+    title: 'Welcome to printf!',
+    subtitle: 'One stope print solution.',
+    uri: "https://lottie.host/6ec486aa-843b-4566-a632-f62955af5aea/B1bbq9mOd7.lottie",
   },
   {
-    title: 'Print Anywhere',
+    title: 'Print from Anywhere',
     subtitle: 'Upload documents instantly.',
-    lottie: '/print.lottie',
+    uri: "https://lottie.host/2443202d-0b4d-4224-bc56-c9d29bf6c186/69Hvfcelft.lottie",
   },
   {
     title: 'Stay Updated',
-    subtitle: 'Track orders live.',
-    lottie: '/notify.lottie',
+    subtitle: 'Push notifications to track your orders',
+    uri: 'https://lottie.host/0f682ab2-d02f-49fc-b7c5-0c317bda0528/rYz2KNLnkn.lottie',
   },
   {
     title: 'Save Time',
-    subtitle: 'Fast & frictionless.',
-    lottie: '/xerox.lottie',
-  }
+    subtitle: 'No more standing in queues for print',
+    uri: 'https://lottie.host/e7926353-a492-44ed-8645-7d8f791bff1b/kcbMmVbGF1.lottie',
+  },
 ];
 
 export default function OnboardingScreen() {
@@ -70,24 +69,14 @@ export default function OnboardingScreen() {
 
   if (isLoading || isAuthenticated) {
     return (
-      <div className="h-[100dvh] flex items-center justify-center" style={{ backgroundColor: colors.background }}>
-        <div className="w-6 h-6 rounded-full border-2 border-t-transparent animate-spin" style={{ borderColor: colors.textMuted }} />
+      <div className="h-[100dvh] flex flex-col items-center justify-center z-[9999]" style={{ backgroundColor: colors.background }}>
+        <div className="w-8 h-8 rounded-full border-2 border-t-transparent animate-spin" style={{ borderColor: colors.primary }} />
+        <span className="mt-4 text-sm font-medium" style={{ color: colors.textSecondary }}>Authenticating...</span>
       </div>
     );
   }
 
-  const handleDotClick = (index: number) => {
-    if (isAnimating) return;
-    setSlides(prev => {
-      const newSlides = [...prev];
-      while (newSlides[0].id !== index) {
-        newSlides.push(newSlides.shift()!);
-      }
-      return newSlides;
-    });
-    if (timeoutRef.current) clearInterval(timeoutRef.current);
-    timeoutRef.current = setInterval(nextSlide, 5000);
-  };
+
 
   return (
     <>
@@ -137,7 +126,7 @@ export default function OnboardingScreen() {
               className={`flex w-full ${isAnimating ? 'transition-transform duration-500 ease-in-out -translate-x-full' : 'translate-x-0'}`}
             >
               {slides.map((slide) => {
-                const src = (slide as any).lottie || (isDark ? (slide as any).lottieDark : (slide as any).lottieLight);
+                const src = (slide as any).uri || (slide as any).lottie || (isDark ? (slide as any).lottieDark : (slide as any).lottieLight);
                 return (
                   <div key={slide.id} className="w-full shrink-0 flex flex-col items-center px-8">
                     {/* Animation */}
@@ -183,16 +172,14 @@ export default function OnboardingScreen() {
               const activeId = isAnimating && slides.length > 1 ? slides[1].id : slides[0].id;
               const isActive = index === activeId;
               return (
-                <button
+                <div
                   key={index}
-                  onClick={() => handleDotClick(index)}
                   className="w-1.5 h-1.5 rounded-full transition-all duration-500 ease-out"
                   style={{
                     backgroundColor: isActive ? colors.primary : colors.textMuted,
                     opacity: isActive ? 1 : 0.3,
                     transform: isActive ? 'scale(1.5)' : 'scale(1)',
                   }}
-                  aria-label={`Go to slide ${index + 1}`}
                 />
               );
             })}
@@ -231,10 +218,13 @@ export default function OnboardingScreen() {
               )}
             </button>
 
-            <div className="flex items-center justify-center gap-3" style={{ color: colors.textMuted }}>
-              <a href="/terms" className="text-[11px] font-semibold uppercase tracking-widest hover:underline opacity-50 hover:opacity-100 transition-opacity">Terms</a>
-              <span className="text-[10px] opacity-20">●</span>
-              <a href="/privacy" className="text-[11px] font-semibold uppercase tracking-widest hover:underline opacity-50 hover:opacity-100 transition-opacity">Privacy</a>
+            <div className="flex justify-center mt-4">
+              <p className="text-[11px] text-center leading-4 opacity-70" style={{ color: colors.textMuted }}>
+                By signing in, you agree to our{' '}
+                <a href="/terms" className="font-semibold underline hover:opacity-80 transition-opacity">Terms of Service</a>
+                {' '}and{' '}
+                <a href="/privacy" className="font-semibold underline hover:opacity-80 transition-opacity">Privacy Policy</a>.
+              </p>
             </div>
           </div>
         </div>

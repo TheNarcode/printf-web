@@ -113,7 +113,7 @@ function PreviewSheet({ sheetIndex, selectedPages, pps, thumbnails, thumbLoading
   );
 }
 
-export default function SettingsScreen() {
+export default function PrintSettingsScreen() {
   const { colors } = useTheme();
   const { files, fileSettings, updateFileSettings } = usePrintJob();
   const { push, pop } = useAppNav();
@@ -262,7 +262,7 @@ export default function SettingsScreen() {
           {files.length > 1 && (
             <div className="flex justify-center items-center gap-1.5 pb-3">
               {files.map((_, i) => (
-                <button key={i} onClick={() => scrollTo(i)} className="transition-all duration-300 rounded-full"
+                <div key={i} className="transition-all duration-300 rounded-full"
                   style={{ width: i === selectedIdx ? 20 : 6, height: 6, backgroundColor: i === selectedIdx ? colors.primary : colors.border }} />
               ))}
             </div>

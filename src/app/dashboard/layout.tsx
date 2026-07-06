@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 
-export type ScreenId = 'home' | 'orders' | 'order_detail' | 'profile' | 'terms' | 'privacy' | 'upload' | 'settings' | 'payment';
+export type ScreenId = 'home' | 'orders' | 'order_detail' | 'profile' | 'terms' | 'privacy' | 'upload' | 'settings' | 'print_settings' | 'payment';
 export interface AppScreen { id: ScreenId; transition?: 'push' | 'modal'; params?: any; }
 
 const AppNavContext = createContext({

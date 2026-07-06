@@ -1,4 +1,4 @@
-export const RAZORPAY_KEY = 'rzp_test_StI0D1pMPdbae3';
+export const RAZORPAY_KEY = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || 'rzp_test_StI0D1pMPdbae3';
 
 declare global {
   interface Window {

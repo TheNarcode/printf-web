@@ -1,6 +1,6 @@
 'use client';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Printer } from 'lucide-react';
+import { Printer, Lock } from 'lucide-react';
 import { useTheme } from '../../theme/ThemeContext';
 import { usePrintJob } from '../../context/PrintJobContext';
 import Header from '../Header';
@@ -44,15 +44,15 @@ export default function OrderDetailScreen({ orderId }: { orderId: string }) {
     }
   }, [order, fetchAttempts, refreshOrders]);
 
-  const screenBg = isDark ? colors.background : '#E5E7EB';
-  const slipBg = isDark ? '#27272A' : '#FFFFFF';
+  const screenBg =  colors.background;
+  const slipBg = isDark ? '#27272A' : '#e0e0e0';;
   const sepColor = colors.textMuted + '70';
 
   if (!order) {
     if (fetchAttempts >= 3) {
       return (
         <div className="h-[100dvh] flex flex-col" style={{ backgroundColor: screenBg }}>
-          <Header title="Order Details" showBack onBack={pop} />
+          <Header title={`Order#${orderId.slice(0, 5)}`} showBack onBack={pop} />
           <div className="flex-1 flex items-center justify-center">
             <p className="text-sm" style={{ color: colors.textMuted }}>Order not found</p>
           </div>
@@ -62,7 +62,7 @@ export default function OrderDetailScreen({ orderId }: { orderId: string }) {
 
     return (
       <div className="h-[100dvh] flex flex-col" style={{ backgroundColor: screenBg }}>
-        <Header title="Order Details" showBack onBack={pop} />
+        <Header title={`Order#${orderId.slice(0, 5)}`} showBack onBack={pop} />
         <div className="flex-1 flex flex-col items-center justify-center gap-3">
           <div className="w-6 h-6 rounded-full border-2 border-t-transparent animate-spin" style={{ borderColor: colors.primary }} />
           <p className="text-sm" style={{ color: colors.textMuted }}>Loading order details...</p>
@@ -80,7 +80,7 @@ export default function OrderDetailScreen({ orderId }: { orderId: string }) {
 
   return (
     <div className="h-[100dvh] flex flex-col overflow-hidden" style={{ backgroundColor: screenBg }}>
-      <Header title="Order Details" showBack onBack={pop} />
+      <Header title={`Order#${order.orderRef || order.id.slice(0, 5)}`} showBack onBack={pop} />
       <main className="flex-1 overflow-y-auto py-4 px-6">
         <div className="max-w-[480px] mx-auto">
           <div className="h-3 overflow-hidden flex" style={{ backgroundColor: screenBg }}>
@@ -178,11 +178,15 @@ export default function OrderDetailScreen({ orderId }: { orderId: string }) {
       </main>
 
       {order.status === 0 && !order.paid && order.paymentRequestId && (
-        <div className="flex-shrink-0 px-6 py-5 border-t sticky bottom-0 z-20" style={{ backgroundColor: colors.card, borderColor: colors.border }}>
-          <div className="page-container">
-            <Btn variant="solid" size="lg" fullWidth onClick={() => payOrder(order)} disabled={isPaying}>
-              {isPaying ? 'PROCESSING...' : `PAY NOW - ${formatCurrency(order.totalPrice)}`}
+        <div className="flex-shrink-0 px-6 py-5 sticky bottom-0 z-20" style={{ backgroundColor: colors.background }}>
+          <div className="page-container flex flex-col items-center">
+            <Btn variant="solid" size="lg" fullWidth onClick={() => payOrder(order)} disabled={isPaying} style={{ backgroundColor: colors.text, color: colors.background, borderColor: colors.text }}>
+              {isPaying ? 'Processing...' : `Pay ${formatCurrency(order.totalPrice)}`}
             </Btn>
+            <div className="flex items-center gap-1.5 mt-3 opacity-60">
+              <Lock size={12} style={{ color: colors.textMuted }} />
+              <span className="text-[11px] font-medium" style={{ color: colors.textMuted }}>Secured by Razorpay</span>
+            </div>
           </div>
         </div>
       )}

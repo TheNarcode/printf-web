@@ -1,4 +1,2 @@
-import SettingsScreen from '../../../components/screens/SettingsScreen';
-export default async function Page() {
-  return <SettingsScreen />;
-}
+import SettingsScreen from '../../../components/app-screens/SettingsScreen';
+export default function Page() { return <SettingsScreen />; }

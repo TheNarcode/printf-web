@@ -52,15 +52,15 @@ export default function UploadScreen() {
   const handleContinue = useCallback(() => {
     const uploadableFiles = files.map(f => ({ id: f.id, file: f.file!, name: f.name, type: f.type })).filter(f => f.file);
     startUploads(uploadableFiles, getValidToken);
-    push({ id: 'settings', transition: 'push' });
+    push({ id: 'print_settings', transition: 'push' });
   }, [files, getValidToken, push]);
 
   return (
     <div className="h-[100dvh] flex flex-col overflow-hidden" style={{ backgroundColor: colors.background }}>
       <Header title="Upload Files" subtitle="Step 1 of 3" showBack onBack={handleBack} />
 
-      <main className="flex-1 overflow-y-auto pb-8">
-        <div className="page-container px-6 pt-4">
+      <main className="flex-1 overflow-y-auto pb-8 flex flex-col">
+        <div className={`page-container px-6 pt-4 flex-1 flex flex-col ${files.length === 0 ? 'justify-center pb-20' : ''}`}>
 
           <FileDropZone onFiles={handleFiles} />
 
@@ -73,14 +73,7 @@ export default function UploadScreen() {
 
           {files.length > 0 && (
             <div className="mt-7 flex flex-col gap-3">
-              <div className="flex items-center justify-between">
-                <h2 className="text-base font-bold" style={{ color: colors.text }}>
-                  Selected files ({files.length})
-                </h2>
-                <span className="text-sm font-medium" style={{ color: colors.textMuted }}>
-                  {formatFileSize(files.reduce((s, f) => s + f.size, 0))} total
-                </span>
-              </div>
+
               {files.map(file => (
                 <FileCard key={file.id} file={file} onRemove={removeFile} />
               ))}
@@ -90,10 +83,13 @@ export default function UploadScreen() {
       </main>
 
       {files.length > 0 && (
-        <div className="flex-shrink-0 px-6 py-5 border-t" style={{ backgroundColor: colors.card, borderColor: colors.border }}>
-          <div className="page-container">
-            <Btn variant="solid" size="lg" fullWidth onClick={handleContinue} disabled={processing}>
-              Continue to Settings
+        <div className="flex-shrink-0 px-6 py-5 z-30" style={{ backgroundColor: colors.background }}>
+          <div className="page-container flex flex-col items-center">
+            <span className="text-[13px] font-medium mb-3" style={{ color: colors.textMuted }}>
+              {files.length} {files.length === 1 ? 'file' : 'files'} selected ({formatFileSize(files.reduce((s, f) => s + f.size, 0))})
+            </span>
+            <Btn variant="solid" size="lg" fullWidth onClick={handleContinue} disabled={processing} style={{ backgroundColor: colors.text, color: colors.background, borderColor: colors.text }}>
+              Continue
             </Btn>
           </div>
         </div>
