@@ -504,7 +504,7 @@ export default function PrintSettingsScreen() {
             disabled={!!pageRangeError || uploadState === 'uploading'}
             loading={uploadState === 'uploading'}
           >
-            {uploadState === 'uploading' ? 'Uploading…' : uploadState === 'failed' ? 'Upload Failed' : 'Proceed to Payment'}
+            {uploadState === 'uploading' ? 'Uploading…' : 'Proceed to Payment'}
           </Btn>
         </div>
       </div>
