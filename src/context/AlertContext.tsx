@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useState, useRef } from 'react';
 
 export type AlertButton = {
   text: string;
@@ -50,6 +50,16 @@ export function AlertProvider({ children }: { children: React.ReactNode }) {
     setState({ visible: true, title, message, buttons: buttons || [{ text: 'OK' }] });
   }, []);
 
+  const alertHistoryRef = useRef(false);
+
+  const hide = useCallback(() => {
+    setState(s => ({ ...s, visible: false }));
+    if (alertHistoryRef.current) {
+      alertHistoryRef.current = false;
+      window.history.back();
+    }
+  }, []);
+
   useEffect(() => {
     _alertFn = alert;
     
@@ -72,7 +82,27 @@ export function AlertProvider({ children }: { children: React.ReactNode }) {
     };
   }, [alert]);
 
-  const hide = useCallback(() => setState(s => ({ ...s, visible: false })), []);
+  useEffect(() => {
+    if (!state.visible) return;
+    window.history.pushState({ alert: true }, '');
+    alertHistoryRef.current = true;
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') hide();
+    };
+
+    const onPop = () => {
+      alertHistoryRef.current = false;
+      setState(s => ({ ...s, visible: false }));
+    };
+
+    window.addEventListener('keydown', onKey);
+    window.addEventListener('popstate', onPop);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      window.removeEventListener('popstate', onPop);
+    };
+  }, [state.visible, hide]);
 
   const handleToastClick = useCallback(() => {
     setToast(prev => ({ ...prev, visible: false }));
@@ -141,7 +171,7 @@ export function AlertProvider({ children }: { children: React.ReactNode }) {
                     className="px-4 py-2 rounded-lg text-sm font-semibold transition-opacity hover:opacity-80"
                     style={{
                       backgroundColor: isCancel ? 'transparent' : isDestructive ? 'var(--color-danger)' : 'var(--color-primary)',
-                      color: isCancel ? 'var(--color-text-secondary)' : 'var(--color-background)',
+                      color: isCancel ? 'var(--color-text-secondary)' : isDestructive ? '#FFFFFF' : 'var(--color-background)',
                     }}
                   >
                     {btn.text}

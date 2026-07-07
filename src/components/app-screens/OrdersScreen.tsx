@@ -6,22 +6,25 @@ import { usePrintJob } from '../../context/PrintJobContext';
 import { useNetwork } from '../../context/NetworkContext';
 import Header from '../Header';
 import OrderCard from '../OrderCard';
-import Btn from '../Btn';
 import { useAppNav } from '../../app/dashboard/layout';
 import { usePayOrder } from '../../hooks/usePayOrder';
 import type { Order } from '../../types';
 
-type Filter = 'all' | 'payment_pending' | 'in_progress' | 'cancelled' | 'collected' | 'failed';
+import { useSearchParams } from 'next/navigation';
+
+type Filter = 'all' | 'payment_pending' | 'in_progress' | 'completed' | 'collected' | 'failed';
 const FILTERS: { key: Filter; label: string }[] = [
   { key: 'all', label: 'All orders' },
   { key: 'in_progress', label: 'In progress' },
   { key: 'payment_pending', label: 'Payment pending' },
-  { key: 'cancelled', label: 'Cancelled' },
+  { key: 'completed', label: 'Completed' },
   { key: 'collected', label: 'Collected' },
   { key: 'failed', label: 'Failed' },
 ];
 
-export default function OrdersScreen({ initialFilter }: { initialFilter?: string }) {
+export default function OrdersScreen({ initialFilter: _ignore }: { initialFilter?: string }) {
+  const searchParams = useSearchParams();
+  const initialFilter = searchParams.get('filter') || _ignore;
   const { colors } = useTheme();
   const { orders, refreshOrders } = usePrintJob();
   const { pop, push } = useAppNav();
@@ -33,7 +36,7 @@ export default function OrdersScreen({ initialFilter }: { initialFilter?: string
   const parsedFilter = useMemo((): Filter[] => {
     if (initialFilter === 'payment_pending') return ['payment_pending'];
     if (initialFilter === 'in_progress') return ['in_progress'];
-    if (initialFilter === 'cancelled') return ['cancelled'];
+    if (initialFilter === 'completed') return ['completed'];
     if (initialFilter === 'failed') return ['failed'];
     if (initialFilter === 'collected') return ['collected'];
     return ['all'];
@@ -42,6 +45,10 @@ export default function OrdersScreen({ initialFilter }: { initialFilter?: string
   const [selectedFilters, setSelectedFilters] = useState<Filter[]>(parsedFilter);
   const [search, setSearch] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
+
+  useEffect(() => {
+    setSelectedFilters(parsedFilter);
+  }, [parsedFilter]);
 
   useEffect(() => {
     const now = Date.now();
@@ -75,7 +82,7 @@ export default function OrdersScreen({ initialFilter }: { initialFilter?: string
       result = result.filter(o => {
         if (selectedFilters.includes('payment_pending') && !o.paid) return true;
         if (selectedFilters.includes('in_progress') && o.status === 0 && o.paid) return true;
-        if (selectedFilters.includes('cancelled') && o.status === 4) return true;
+        if (selectedFilters.includes('completed') && o.status === 1) return true;
         if (selectedFilters.includes('failed') && o.status === 2) return true;
         if (selectedFilters.includes('collected') && o.status === 3) return true;
         return false;
@@ -84,7 +91,11 @@ export default function OrdersScreen({ initialFilter }: { initialFilter?: string
     
     if (search.trim()) {
       const q = search.toLowerCase();
-      result = result.filter(o => o.files.some(f => f.file.name.toLowerCase().includes(q)));
+      result = result.filter(o => {
+        const displayId = (o.orderRef || o.id.slice(0, 5)).toLowerCase();
+        if (displayId.includes(q)) return true;
+        return o.files.some(f => f.file.name.toLowerCase().includes(q));
+      });
     }
     return result;
   }, [orders, selectedFilters, search]);
@@ -112,13 +123,13 @@ export default function OrdersScreen({ initialFilter }: { initialFilter?: string
           </button>
         }
       />
-      <div className="shrink-0 px-6 pt-4 pb-2 w-full max-w-2xl mx-auto relative z-10">
+      <div className="shrink-0 px-6 pb-2 w-full max-w-2xl mx-auto relative z-10">
         <h1 className="text-2xl font-bold tracking-tight mb-0.5" style={{ color: colors.text }}>Manage and track orders</h1>
         
         <div className="flex items-center gap-2 mt-5 mb-3 relative z-10">
           <div className="flex-1 flex items-center gap-2.5 px-3.5 h-11 rounded-xl border" style={{ backgroundColor: colors.surface, borderColor: colors.border }}>
             <Search size={16} color={colors.textMuted} strokeWidth={2} />
-            <input type="text" placeholder="Search orders..." value={search}
+            <input type="text" placeholder="Search by file name or order ID..." value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="flex-1 bg-transparent border-none outline-none text-sm font-medium" style={{ color: colors.text }} />
           </div>

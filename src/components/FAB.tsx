@@ -14,7 +14,7 @@ const FAB = memo(({ onClick }: FABProps) => {
   return (
     <button
       onClick={onClick}
-      className="fixed bottom-7 right-5 w-14 h-14 rounded-[14px] flex items-center justify-center shadow-lg transition-all hover:scale-105 active:scale-95 z-40"
+      className="fixed bottom-10 right-10 w-14 h-14 rounded-[14px] flex items-center justify-center shadow-lg transition-all hover:scale-105 active:scale-95 z-40"
       style={{ backgroundColor: colors.primary }}
       aria-label="New print order"
     >

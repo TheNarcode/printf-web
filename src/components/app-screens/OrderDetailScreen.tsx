@@ -83,8 +83,8 @@ export default function OrderDetailScreen({ orderId }: { orderId: string }) {
   return (
     <div className="h-[100dvh] flex flex-col overflow-hidden" style={{ backgroundColor: screenBg }}>
       <Header title={`Order#${order.orderRef || order.id.slice(0, 5)}`} showBack onBack={pop} />
-      <main className="flex-1 overflow-y-auto py-4 px-6">
-        <div className="max-w-[480px] mx-auto">
+      <main className="flex-1 overflow-y-auto py-4 px-6 flex flex-col">
+        <div className="max-w-[480px] w-full mx-auto my-auto">
           <div className="h-3 overflow-hidden flex" style={{ backgroundColor: screenBg }}>
             {Array.from({ length: 60 }).map((_, i) => (
               <div key={i} className="flex-shrink-0" style={{ width: 0, height: 0, borderLeft: '6px solid transparent', borderRight: '6px solid transparent', borderBottom: `12px solid ${slipBg}` }} />
@@ -162,8 +162,8 @@ export default function OrderDetailScreen({ orderId }: { orderId: string }) {
               <span className="font-mono font-bold text-base" style={{ color: colors.text }}>{formatCurrency(order.totalPrice)}</span>
             </div>
             <div className="flex justify-between mb-0.5">
-              <span className="font-mono text-[11px]" style={{ color: colors.textSecondary }}>PAID</span>
-              <span className="font-mono text-[11px]" style={{ color: colors.textSecondary }}>Online</span>
+              <span className="font-mono text-[11px]" style={{ color: colors.textSecondary }}>STATUS</span>
+              <span className="font-mono text-[11px]" style={{ color: colors.textSecondary }}>{order.paid ? 'Payment Cleared' : 'Payment Pending'}</span>
             </div>
             <Separator color={sepColor} />
             <div className="flex flex-col items-center mt-0.5 mb-1.5">
@@ -180,8 +180,8 @@ export default function OrderDetailScreen({ orderId }: { orderId: string }) {
       </main>
 
       {order.status === 0 && !order.paid && order.paymentRequestId && (
-        <div className="flex-shrink-0 px-6 py-5 sticky bottom-0 z-20" style={{ backgroundColor: colors.background }}>
-          <div className="page-container flex flex-col items-center">
+        <div className="flex-shrink-0 px-6 py-5 sticky bottom-0 z-20 pointer-events-none">
+          <div className="page-container flex flex-col items-center pointer-events-auto">
             <Btn variant="solid" size="lg" fullWidth onClick={() => payOrder(order)} disabled={isPaying} style={{ backgroundColor: colors.text, color: colors.background, borderColor: colors.text }}>
               {isPaying ? 'Processing...' : `Pay ${formatCurrency(order.totalPrice)}`}
             </Btn>

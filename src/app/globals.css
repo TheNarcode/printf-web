@@ -116,11 +116,20 @@ body {
   50% { opacity: 0.5; }
 }
 
+@keyframes scaleUpBounce {
+  0% { transform: scale(0); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
 
+@keyframes fadeInDelay {
+  0%, 50% { opacity: 0; }
+  100% { opacity: 1; }
+}
 
 .animate-fade-in   { animation: fadeIn 0.4s ease-out; }
 .animate-pulse     { animation: pulse 2.5s ease-in-out infinite; }
-.animate-pulse     { animation: pulse 2.5s ease-in-out infinite; }
+.animate-scale-up-bounce { animation: scaleUpBounce 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+.animate-fade-in-delay { animation: fadeInDelay 0.7s ease-out forwards; }
 
 /* ── Receipt jagged edge ────────────────────────────────────────────*/
 .receipt-top {

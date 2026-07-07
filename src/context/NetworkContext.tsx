@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
+import { CustomAlertAPI } from './AlertContext';
 
 export type NetworkStatus = 'online' | 'offline' | 'back-online';
 
@@ -55,7 +56,7 @@ export function NetworkProvider({ children }: { children: React.ReactNode }) {
 
   const assertOnline = (message = "You're offline. Please connect to the internet to continue.") => {
     if (isOffline) {
-      alert(message);
+      CustomAlertAPI.alert('No Connection', message);
       return false;
     }
     return true;

@@ -26,7 +26,7 @@ export interface FileWithSettings {
   price: number;
 }
 
-export type OrderStatus = 0 | 1 | 2 | 3;
+export type OrderStatus = 0 | 1 | 2 | 3 | 4;
 
 export interface Order {
   id: string;

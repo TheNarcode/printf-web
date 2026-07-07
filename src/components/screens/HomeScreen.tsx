@@ -121,7 +121,7 @@ export default function HomeScreen() {
           </div>
 
           {recentOrders.length > 0 ? (
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-2.5">
               {recentOrders.map((order, idx) => (
                 <div key={order.id} className={idx === 3 ? "hidden md:block" : ""}>
                   <OrderCard order={order} onPress={handleOrderPress} variant="list" />

@@ -28,6 +28,9 @@ function OrderResultContent() {
 
   const [dotLottie, setDotLottie] = React.useState<any>(null);
 
+  const successUri = "https://lottie.host/59ee1bc4-e837-4541-9a74-11a4f119ddf2/157gf4t4rF.lottie";
+  const failUri = "https://lottie.host/d19042ee-3913-401f-82a2-2d6723bbb1c9/c1rsPI1Jhg.lottie";
+
   React.useEffect(() => {
     if (!dotLottie) return;
     const onFrame = () => {
@@ -45,64 +48,66 @@ function OrderResultContent() {
       <Header title="" />
 
       <main className="flex-1 flex flex-col justify-center items-center px-8 pb-20">
-        <div className="w-[160px] h-[160px] mb-6">
+        <div className="w-[300px] h-[300px] mb-6 animate-scale-up-bounce">
           {success ? (
-            <DotLottieReact src="/success.lottie" autoplay loop={false} dotLottieRefCallback={setDotLottie} />
+            <DotLottieReact src={successUri} segment={[1, 43]} autoplay loop={false} dotLottieRefCallback={setDotLottie} />
           ) : (
-            <DotLottieReact src="/fail.lottie" autoplay loop={false} dotLottieRefCallback={setDotLottie} />
+            <DotLottieReact src={failUri} segment={[1, 58]} autoplay loop={false} dotLottieRefCallback={setDotLottie} />
           )}
         </div>
 
-        <h1 className="text-3xl font-bold text-center mb-3" style={{ color: colors.text, fontFamily: 'var(--font-geist-sans), sans-serif', letterSpacing: '-0.5px' }}>
-          {success ? 'Order Placed!' : 'Payment Failed'}
-        </h1>
-        
-        <p className="text-center text-[15px] mb-8 max-w-sm leading-relaxed" style={{ color: colors.textMuted }}>
-          {success ? 'Your print order has been submitted successfully.' : errorMessage}
-        </p>
+        <div className="animate-fade-in-delay w-full flex flex-col items-center">
+          <h1 className="text-3xl font-bold text-center mb-3" style={{ color: colors.text, fontFamily: 'var(--font-geist-sans), sans-serif', letterSpacing: '-0.5px' }}>
+            {success ? 'Order Placed!' : 'Payment Failed'}
+          </h1>
+          
+          <p className="text-center text-[15px] mb-8 max-w-sm leading-relaxed" style={{ color: colors.textMuted }}>
+            {success ? 'Your print order has been submitted successfully.' : errorMessage}
+          </p>
 
-        {success && order && (
-          <div 
-            className="rounded-xl border flex flex-col items-center gap-1.5 py-4 px-8 mb-10"
-            style={{ backgroundColor: colors.surface, borderColor: colors.border }}
-          >
-            <span className="text-xs font-medium uppercase tracking-widest" style={{ color: colors.textMuted }}>Order Reference</span>
-            <span className="text-2xl font-bold tracking-wide" style={{ color: colors.text, fontFamily: 'var(--font-geist-mono), monospace' }}>
-              {order.orderRef || order.id.slice(0, 8)}
-            </span>
-          </div>
-        )}
+          {success && order && (
+            <div 
+              className="rounded-xl border flex flex-col items-center gap-1.5 py-4 px-8 mb-10 w-full max-w-[280px]"
+              style={{ backgroundColor: colors.surface, borderColor: colors.border }}
+            >
+              <span className="text-xs font-medium uppercase tracking-widest" style={{ color: colors.textMuted }}>Order Reference</span>
+              <span className="text-2xl font-bold tracking-wide" style={{ color: colors.text, fontFamily: 'var(--font-geist-mono), monospace' }}>
+                {order.orderRef || order.id.slice(0, 8)}
+              </span>
+            </div>
+          )}
 
-        <div className="w-full max-w-[280px] flex flex-col gap-3">
-          {success ? (
-            <>
+          <div className="w-full max-w-[280px] flex flex-col gap-3">
+            {success ? (
+              <>
+                <Btn 
+                  variant="solid" 
+                  size="lg" 
+                  fullWidth 
+                  onClick={() => router.push(`/dashboard?orderId=${orderId}`)}
+                >
+                  View Order
+                </Btn>
+                <Btn 
+                  variant="outline" 
+                  size="lg" 
+                  fullWidth 
+                  onClick={() => router.push('/dashboard')}
+                >
+                  Back to Home
+                </Btn>
+              </>
+            ) : (
               <Btn 
                 variant="solid" 
                 size="lg" 
                 fullWidth 
-                onClick={() => router.push(`/dashboard?orderId=${orderId}`)}
-              >
-                View Order
-              </Btn>
-              <Btn 
-                variant="outline" 
-                size="lg" 
-                fullWidth 
                 onClick={() => router.push('/dashboard')}
               >
-                Back to Home
+                Go Home
               </Btn>
-            </>
-          ) : (
-            <Btn 
-              variant="solid" 
-              size="lg" 
-              fullWidth 
-              onClick={() => router.push('/dashboard')}
-            >
-              Go Home
-            </Btn>
-          )}
+            )}
+          </div>
         </div>
       </main>
     </div>

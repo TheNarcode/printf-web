@@ -9,12 +9,20 @@ export default function NetworkBanner() {
   const { status } = useNetwork();
   const { colors } = useTheme();
 
-  const visible = status === 'offline' || status === 'back-online';
-  const isBackOnline = status === 'back-online';
+  const [displayStatus, setDisplayStatus] = React.useState(status);
 
-  const bg = isBackOnline ? colors.successBg : '#3f3f46';
-  const border = isBackOnline ? colors.successBorder : '#52525b';
-  const color = isBackOnline ? colors.success : '#e4e4e7';
+  React.useEffect(() => {
+    if (status !== 'online') {
+      setDisplayStatus(status);
+    }
+  }, [status]);
+
+  const visible = status === 'offline' || status === 'back-online';
+  const isBackOnline = displayStatus === 'back-online';
+
+  const bg = isBackOnline ? '#16a34a' : '#3f3f46';
+  const border = isBackOnline ? '#15803d' : '#52525b';
+  const color = isBackOnline ? '#ffffff' : '#e4e4e7';
 
   return (
     <div
