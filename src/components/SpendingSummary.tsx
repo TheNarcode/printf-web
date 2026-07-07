@@ -21,14 +21,14 @@ const SpendingSummary = memo(({ orders }: SpendingSummaryProps) => {
 
   return (
     <div className="rounded-2xl border p-4" style={{ backgroundColor: colors.card, borderColor: colors.border }}>
-      <div className="flex rounded-full p-0.5 mb-5" style={{ backgroundColor: colors.surface }}>
+      <div className="flex rounded-lg p-0.5 mb-5" style={{ backgroundColor: colors.surface }}>
         {periods.map(p => {
           const active = period === p;
           return (
             <button
               key={p}
               onClick={() => setPeriod(p)}
-              className="flex-1 py-1.5 text-[11px] font-medium rounded-full transition-all"
+              className="flex-1 py-2 text-[11px] font-medium rounded-md transition-all"
               style={{
                 backgroundColor: active ? colors.card : 'transparent',
                 color: active ? colors.text : colors.textMuted,

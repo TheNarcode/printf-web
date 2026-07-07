@@ -2,15 +2,13 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Sun, Moon, Printer, ArrowLeft } from 'lucide-react';
 import { useTheme } from '../../theme/ThemeContext';
-import { useAuth } from '../../context/AuthContext';
 
 export default function PrivacyPage() {
   const { colors, isDark, setMode } = useTheme();
-  const { isAuthenticated } = useAuth();
-
-  const back = isAuthenticated ? '/dashboard' : '/';
+  const router = useRouter();
 
   const section = (num: string, title: string, children: React.ReactNode) => (
     <section style={{ borderTop: `1px solid ${colors.border}`, paddingTop: '1.5rem', marginBottom: '1.5rem' }}>
@@ -48,9 +46,9 @@ export default function PrivacyPage() {
       <main style={{ maxWidth: '42rem', margin: '0 auto', padding: '1.5rem 1.5rem 6rem' }}>
 
         {/* Back */}
-        <Link href={back} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.375rem', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: colors.textSecondary, textDecoration: 'none', marginBottom: '2.5rem' }}>
+        <button onClick={() => router.back()} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.375rem', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: colors.textSecondary, background: 'none', border: 'none', padding: 0, cursor: 'pointer', marginBottom: '2.5rem' }}>
           <ArrowLeft size={12} strokeWidth={2.5} />Back
-        </Link>
+        </button>
 
         {/* Title */}
         <div style={{ marginBottom: '2.5rem' }}>

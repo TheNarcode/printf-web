@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useCallback } from 'react';
+import Link from 'next/link';
 import { LogOut, Moon, Sun, Monitor } from 'lucide-react';
 import { useTheme } from '../../theme/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
@@ -37,12 +38,12 @@ export default function SettingsScreen() {
       <Header title="Settings" showBack onBack={pop} />
 
       <main className="flex-1 overflow-y-auto pb-10">
-        <div className="page-container px-6 py-4 flex flex-col gap-6">
+        <div className="page-container px-6 py-4 flex flex-col gap-5">
 
           {/* Profile card */}
           <div className="rounded-2xl border p-4" style={{ backgroundColor: colors.card, borderColor: colors.border }}>
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0" style={{ backgroundColor: colors.surface }}>
+              <div className="w-12 h-12 rounded-full flex items-center justify-center overflow-hidden shrink-0" style={{ backgroundColor: colors.surface }}>
                 {user?.photo ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={user.photo} alt={user.name || 'Profile'} className="w-full h-full object-cover" />
@@ -56,7 +57,7 @@ export default function SettingsScreen() {
               </div>
               <button
                 onClick={handleSignOut}
-                className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 transition-opacity hover:opacity-70"
+                className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 transition-opacity hover:opacity-70"
                 style={{ backgroundColor: colors.dangerBg }}
                 aria-label="Sign out"
               >
@@ -74,14 +75,14 @@ export default function SettingsScreen() {
           {/* Appearance */}
           <div className="flex flex-col gap-2.5">
             <p className="text-[9px] font-bold tracking-widest uppercase" style={{ color: colors.textMuted }}>APPEARANCE</p>
-            <div className="flex rounded-xl p-0.5" style={{ backgroundColor: colors.surface }}>
+            <div className="flex rounded-lg p-0.5" style={{ backgroundColor: colors.surface }}>
               {THEME_OPTIONS.map(({ key, label, Icon }) => {
                 const active = mode === key;
                 return (
                   <button
                     key={key}
                     onClick={() => setMode(key)}
-                    className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg transition-all"
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md transition-all"
                     style={{
                       backgroundColor: active ? colors.card : 'transparent',
                       boxShadow: active ? '0 1px 4px rgba(0,0,0,0.1)' : 'none',
@@ -97,22 +98,16 @@ export default function SettingsScreen() {
             </div>
           </div>
 
-          <div className="flex items-center justify-center gap-2 flex-wrap" style={{ color: colors.textMuted }}>
-            <p className="text-[10px]">printf v1.0.0</p>
-            <span className="text-[10px] opacity-40">·</span>
-            <button
-              onClick={() => push({ id: 'terms', transition: 'push' })}
-              className="text-[10px] hover:underline transition-opacity hover:opacity-100 opacity-60"
-            >
-              Terms
-            </button>
-            <span className="text-[10px] opacity-40">·</span>
-            <button
-              onClick={() => push({ id: 'privacy', transition: 'push' })}
-              className="text-[10px] hover:underline transition-opacity hover:opacity-100 opacity-60"
-            >
-              Privacy
-            </button>
+          <div className="flex flex-col items-center justify-center gap-1.5 mt-4" style={{ color: colors.textMuted }}>
+            <p className="text-[10px] font-mono tracking-widest opacity-50 uppercase">printf v1.0.0</p>
+            <a href="https://github.com/thenarcode" target="_blank" rel="noopener noreferrer" className="text-[11px] font-bold tracking-wider hover:underline transition-all">
+              The Narcode
+            </a>
+            <div className="flex items-center gap-3 mt-1 text-[10px] font-bold uppercase tracking-wider opacity-60">
+              <Link href="/terms" className="hover:underline transition-opacity hover:opacity-100">Terms</Link>
+              <span>|</span>
+              <Link href="/privacy" className="hover:underline transition-opacity hover:opacity-100">Privacy</Link>
+            </div>
           </div>
         </div>
       </main>
