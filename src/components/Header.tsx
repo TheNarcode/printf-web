@@ -3,6 +3,7 @@
 import React from 'react';
 import { ArrowLeft, Printer } from 'lucide-react';
 import { useTheme } from '../theme/ThemeContext';
+import { useNetwork } from '../context/NetworkContext';
 
 interface HeaderProps {
   title?: string;
@@ -16,14 +17,17 @@ interface HeaderProps {
 
 export default function Header({ title, subtitle, showBack, onBack, rightElement, showBrand, transparent = false }: HeaderProps) {
   const { colors } = useTheme();
+  const { status } = useNetwork();
+  
+  const bannerVisible = status === 'offline' || status === 'back-online';
 
   return (
     <header
-      className={`sticky top-0 z-50 px-6 pt-4 ${transparent ? '' : 'backdrop-blur-md'}`}
-      style={transparent ? {
-        backgroundColor: 'transparent',
-      } : {
-        backgroundColor: colors.background + 'EE',
+      className={`sticky top-0 z-50 px-6 ${transparent ? '' : 'backdrop-blur-md'}`}
+      style={{
+        paddingTop: bannerVisible ? '40px' : '16px',
+        transition: 'padding-top 300ms cubic-bezier(0.4, 0, 0.2, 1)',
+        ...(transparent ? { backgroundColor: 'transparent' } : { backgroundColor: colors.background + 'EE' })
       }}
     >
       <div 
