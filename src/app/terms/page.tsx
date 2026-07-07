@@ -1,36 +1,142 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
-import { termsHTML } from './termsContent';
-
-export const metadata = {
-  title: 'Terms and Conditions - printf',
-};
+import { Sun, Moon, Printer, ArrowLeft } from 'lucide-react';
+import { useTheme } from '../../theme/ThemeContext';
+import { useAuth } from '../../context/AuthContext';
 
 export default function TermsPage() {
+  const { colors, isDark, setMode } = useTheme();
+  const { isAuthenticated } = useAuth();
+
+  const back = isAuthenticated ? '/dashboard' : '/';
+
+  const section = (num: string, title: string, children: React.ReactNode) => (
+    <section key={num} style={{ borderTop: `1px solid ${colors.border}`, paddingTop: '1.5rem', marginBottom: '1.5rem' }}>
+      <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'baseline', marginBottom: '0.75rem' }}>
+        <span style={{ fontFamily: 'var(--font-geist-mono), monospace', fontSize: '0.6875rem', letterSpacing: '0.1em', opacity: 0.35, flexShrink: 0 }}>{num}</span>
+        <h2 style={{ fontSize: '0.8125rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: colors.text, margin: 0 }}>{title}</h2>
+      </div>
+      <div style={{ paddingLeft: '2.75rem', fontSize: '0.875rem', lineHeight: '1.65', color: colors.textSecondary }}>
+        {children}
+      </div>
+    </section>
+  );
+
+  const li = (text: string) => (
+    <div key={text} style={{ display: 'flex', gap: '0.75rem', borderTop: `1px solid ${colors.border}`, padding: '0.5rem 0', alignItems: 'baseline' }}>
+      <span style={{ fontFamily: 'var(--font-geist-mono), monospace', fontSize: '0.6875rem', opacity: 0.35, flexShrink: 0 }}>—</span>
+      <span style={{ fontSize: '0.875rem', color: colors.textSecondary }}>{text}</span>
+    </div>
+  );
+
   return (
-    <div className="min-h-dvh" style={{ backgroundColor: 'var(--color-background)', color: 'var(--color-text)', fontFamily: 'var(--font-geist-sans), sans-serif' }}>
-      <header className="px-6 py-8 max-w-4xl mx-auto flex items-center justify-between">
-        <Link
-          href="/"
-          className="flex items-center gap-2 text-[13px] font-bold tracking-tight uppercase transition-opacity hover:opacity-50"
-          style={{ color: 'var(--color-text)' }}
-        >
-          <ArrowLeft size={16} strokeWidth={2.5} />
-          Back to Home
-        </Link>
-        <span className="text-[16px] font-black tracking-[-0.04em] uppercase">printf</span>
+    <div style={{ minHeight: '100dvh', backgroundColor: colors.background, color: colors.text, fontFamily: 'var(--font-geist-sans), system-ui, sans-serif' }}>
+
+      {/* Header */}
+      <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem 1.5rem', backgroundColor: 'transparent', position: 'sticky', top: 0, zIndex: 50 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <Printer size={16} strokeWidth={1.8} style={{ color: colors.text }} />
+          <span style={{ fontSize: '0.9375rem', fontWeight: 700, letterSpacing: '-0.02em', color: colors.text }}>printf</span>
+        </div>
+        <button onClick={() => setMode(isDark ? 'light' : 'dark')} style={{ color: colors.text, padding: '0.5rem', borderRadius: '50%', background: 'none', border: 'none', cursor: 'pointer' }} aria-label="Toggle theme">
+          {isDark ? <Sun size={18} strokeWidth={2} /> : <Moon size={18} strokeWidth={2} />}
+        </button>
       </header>
 
-      <main className="px-6 py-20 max-w-3xl mx-auto">
-        <h1 className="text-5xl md:text-6xl font-black tracking-tighter leading-[1] mb-12" style={{ color: 'var(--color-text)' }}>
-          Terms and Conditions
-        </h1>
-        <div suppressHydrationWarning className="prose prose-lg dark:prose-invert max-w-none prose-h2:text-3xl prose-h2:font-bold prose-h2:tracking-tight prose-h2:mt-16 prose-h2:mb-8 prose-h3:text-xl prose-p:text-[17px] prose-p:leading-relaxed prose-li:text-[17px] prose-strong:text-[var(--color-text)]" style={{ color: 'var(--color-text-secondary)' }}>
-          <p className="text-sm font-mono tracking-widest uppercase mb-12 opacity-60">Last updated: June 28, 2026</p>
-          <div suppressHydrationWarning dangerouslySetInnerHTML={{ __html: termsHTML }} />
+      <main style={{ maxWidth: '42rem', margin: '0 auto', padding: '1.5rem 1.5rem 6rem' }}>
+
+        {/* Back */}
+        <Link href={back} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.375rem', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: colors.textSecondary, textDecoration: 'none', marginBottom: '2.5rem' }}>
+          <ArrowLeft size={12} strokeWidth={2.5} />Back
+        </Link>
+
+        {/* Title */}
+        <div style={{ marginBottom: '2.5rem' }}>
+          <p style={{ fontFamily: 'var(--font-geist-mono), monospace', fontSize: '0.6875rem', letterSpacing: '0.12em', textTransform: 'uppercase', opacity: 0.4, marginBottom: '0.625rem' }}>Effective 7 July 2026</p>
+          <h1 style={{ fontSize: 'clamp(2.25rem, 5vw, 3.25rem)', fontWeight: 900, letterSpacing: '-0.04em', lineHeight: 1, color: colors.text, margin: 0 }}>Terms &amp; Conditions</h1>
+        </div>
+
+        {section('01', 'The Service', <>
+          <p>printf is a campus print service operated by <strong style={{ color: colors.text }}>The Narcode</strong> — an informal student group, not a registered entity. The service is available at{' '}
+            <a href="https://print-f.top" target="_blank" rel="noopener noreferrer" style={{ color: colors.text, textDecoration: 'underline' }}>print-f.top</a>{' '}
+            and as an Android APK, restricted to campus use only.
+          </p>
+        </>)}
+
+        {section('02', 'Eligibility', <>
+          <p style={{ marginBottom: '0.5rem' }}>By using printf, you confirm that:</p>
+          {li('You are a student or staff member of the associated college.')}
+          {li('You are at least 13 years of age.')}
+          {li('You will not share your account or permit others to access it.')}
+        </>)}
+
+        {section('03', 'Payments & Refunds', <>
+          <p>All payments are processed by <strong style={{ color: colors.text }}>Razorpay</strong> (RBI-regulated). Amounts are charged in INR via the payment methods available at checkout.</p>
+          <div style={{ borderLeft: `2px solid ${colors.text}`, paddingLeft: '1rem', marginTop: '0.75rem' }}>
+            <p style={{ fontWeight: 700, fontSize: '0.8rem', letterSpacing: '0.05em', textTransform: 'uppercase', color: colors.text, marginBottom: '0.25rem' }}>No Refunds</p>
+            <p>All transactions are final. Refunds are not provided except where a verified system fault on our end causes an incorrect or failed print. Disputes must be raised within 24 hours via the contact details below.</p>
+          </div>
+        </>)}
+
+        {section('04', 'Uploaded Files', <>
+          <p>By uploading a file, you warrant that you hold the right to reproduce the content and that it does not infringe any law or third-party rights. You are solely responsible for the content you submit.</p>
+          <p style={{ marginTop: '0.625rem' }}><strong style={{ color: colors.text }}>Auto-deletion:</strong> All uploaded files are permanently deleted from Cloudflare R2 within 24 hours of upload, irrespective of order status.</p>
+          <p style={{ marginTop: '0.625rem' }}>We reserve the right to refuse printing of content that violates these terms.</p>
+        </>)}
+
+        {section('05', 'Prohibited Conduct', <>
+          <p style={{ marginBottom: '0.5rem' }}>You may not use printf to:</p>
+          {li('Reproduce copyrighted content without authorisation from the rights holder.')}
+          {li('Submit illegal, obscene, or defamatory material for printing.')}
+          {li('Attempt to exploit, scrape, or disrupt the service or its infrastructure.')}
+          {li('Use automated scripts, bots, or non-human agents to interact with the service.')}
+          {li('Circumvent payment obligations or obtain print jobs without valid payment.')}
+          <p style={{ marginTop: '0.75rem' }}>Violations may result in immediate account suspension.</p>
+        </>)}
+
+        {section('06', 'Android App', <>
+          <p>The Android APK is distributed via direct sideload — it is not on the Play Store. By installing it, you agree not to decompile, reverse-engineer, modify, or redistribute the application.</p>
+        </>)}
+
+        {section('07', 'Intellectual Property', <>
+          <p>The printf app, its code, and branding belong to The Narcode. You retain ownership of your uploaded documents. By submitting a file, you grant us a temporary licence to process and print it — this expires upon automatic deletion of the file (within 24 hours).</p>
+        </>)}
+
+        {section('08', 'Disclaimer', <>
+          <p>printf is provided &ldquo;as is&rdquo; without warranties of any kind. The Narcode is not liable for service interruptions, print errors, or any indirect or consequential damages. Liability, if established, is capped at the amount paid for the specific transaction in dispute.</p>
+        </>)}
+
+        {section('09', 'Governing Law', <>
+          <p>These terms are governed by the laws of Maharashtra, India. Disputes shall be subject to the exclusive jurisdiction of courts in Mumbai. We encourage direct resolution — contact us before initiating formal proceedings.</p>
+        </>)}
+
+        {section('10', 'Changes', <>
+          <p>We may update these terms at any time. Material changes will be communicated via in-app notification or email. Continued use constitutes acceptance of the revised terms.</p>
+        </>)}
+
+        {/* Contact */}
+        <div style={{ borderTop: `1px solid ${colors.border}`, paddingTop: '1.5rem', marginTop: '0.5rem' }}>
+          <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'baseline', marginBottom: '1rem' }}>
+            <span style={{ fontFamily: 'var(--font-geist-mono), monospace', fontSize: '0.6875rem', letterSpacing: '0.1em', opacity: 0.35, flexShrink: 0 }}>—</span>
+            <h2 style={{ fontSize: '0.8125rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: colors.text, margin: 0 }}>Contact</h2>
+          </div>
+          <div style={{ paddingLeft: '2.75rem' }}>
+            <p style={{ fontSize: '0.875rem', color: colors.textSecondary }}>For all enquiries regarding these terms, or to raise a dispute, write to{' '}
+              <a href="mailto:thenarcode@gmail.com" style={{ color: colors.text, textDecoration: 'underline', textUnderlineOffset: '3px', fontWeight: 600 }}>thenarcode@gmail.com</a>.
+            </p>
+          </div>
         </div>
       </main>
+
+      <footer style={{ borderTop: `1px solid ${colors.border}`, padding: '1.25rem 1.5rem', maxWidth: '42rem', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }}>
+        <span style={{ fontSize: '0.6875rem', fontFamily: 'var(--font-geist-mono), monospace', letterSpacing: '0.06em', color: colors.textMuted, opacity: 0.5 }}>printf © 2026 — The Narcode</span>
+        <div style={{ display: 'flex', gap: '1.25rem', alignItems: 'center' }}>
+          <a href="https://github.com/thenarcode" target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: colors.textSecondary, textDecoration: 'none', opacity: 0.6 }}>GitHub</a>
+          <Link href="/privacy" style={{ fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: colors.textSecondary, textDecoration: 'none', opacity: 0.6 }}>Privacy</Link>
+        </div>
+      </footer>
     </div>
   );
 }
