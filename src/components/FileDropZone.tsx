@@ -3,6 +3,7 @@
 import React, { memo, useCallback, useState } from 'react';
 import { CloudUpload } from 'lucide-react';
 import { useTheme } from '../theme/ThemeContext';
+import { CustomAlertAPI } from '../context/AlertContext';
 
 interface FileDropZoneProps {
   onFiles: (files: File[]) => void;
@@ -10,14 +11,12 @@ interface FileDropZoneProps {
 
 const ACCEPTED_TYPES = [
   'application/pdf',
-  'application/msword',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
   'image/jpeg',
   'image/png',
   'image/jpg',
 ];
 
-const ACCEPTED_EXTS = '.pdf,.doc,.docx,.jpg,.jpeg,.png';
+const ACCEPTED_EXTS = '.pdf,.jpg,.jpeg,.png';
 
 const FileDropZone = memo(({ onFiles }: FileDropZoneProps) => {
   const { colors } = useTheme();
@@ -25,9 +24,25 @@ const FileDropZone = memo(({ onFiles }: FileDropZoneProps) => {
 
   const processFiles = useCallback((fileList: FileList | null) => {
     if (!fileList) return;
-    const valid = Array.from(fileList).filter(f =>
-      ACCEPTED_TYPES.includes(f.type) || ACCEPTED_EXTS.split(',').some(ext => f.name.toLowerCase().endsWith(ext.trim().replace('.', '')))
-    );
+    const valid: File[] = [];
+    const invalid: string[] = [];
+
+    Array.from(fileList).forEach(f => {
+      const isValid = ACCEPTED_TYPES.includes(f.type) || ACCEPTED_EXTS.split(',').some(ext => f.name.toLowerCase().endsWith(ext.trim().replace('.', '')));
+      if (isValid) {
+        valid.push(f);
+      } else {
+        invalid.push(f.name);
+      }
+    });
+
+    if (invalid.length > 0) {
+      CustomAlertAPI.alert(
+        'Unsupported Format',
+        `We currently process PDF, JPG, and PNG formats. ${invalid.length === 1 ? '1 file was' : `${invalid.length} files were`} skipped to ensure the best print quality.`
+      );
+    }
+
     if (valid.length > 0) onFiles(valid);
   }, [onFiles]);
 
