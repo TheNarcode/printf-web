@@ -14,6 +14,7 @@ import type { UploadedFile } from '../../types';
 import { generateId, formatFileSize } from '../../utils/formatters';
 import { getPdfPageCount } from '../../utils/previewUtils';
 import { startUploads } from '../../services/fileUploadManager';
+import { CustomAlertAPI } from '../../context/AlertContext';
 
 export default function UploadScreen() {
   const { colors } = useTheme();
@@ -27,7 +28,15 @@ export default function UploadScreen() {
     setProcessing(true);
     try {
       const uploaded: UploadedFile[] = [];
+      const skippedNames: string[] = [];
       for (const raw of rawFiles) {
+        const isDuplicate = files.some(f => f.name === raw.name && f.size === raw.size) ||
+                            uploaded.some(f => f.name === raw.name && f.size === raw.size);
+        if (isDuplicate) {
+          skippedNames.push(raw.name);
+          continue;
+        }
+
         let pages = 1;
         if (raw.type === 'application/pdf') pages = await getPdfPageCount(raw);
         uploaded.push({
@@ -40,11 +49,17 @@ export default function UploadScreen() {
           pages,
         });
       }
-      addFiles(uploaded);
+      if (uploaded.length > 0) addFiles(uploaded);
+      if (skippedNames.length > 0) {
+        CustomAlertAPI.alert(
+          'Duplicate Files Skipped',
+          `The following files were already added:\n${skippedNames.join(', ')}`
+        );
+      }
     } finally {
       setProcessing(false);
     }
-  }, [addFiles]);
+  }, [addFiles, files]);
 
   const handleBack = useCallback(() => {
     resetFlow();
