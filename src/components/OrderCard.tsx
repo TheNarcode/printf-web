@@ -43,7 +43,7 @@ const OrderCard = memo(({ order, onPress, variant = 'list' }: OrderCardProps) =>
     return (
       <button
         onClick={() => onPress(order)}
-        className="w-full flex items-center gap-2.5 px-3.5 py-3 border-b text-left transition-all hover:opacity-80 active:opacity-60"
+        className="w-full flex items-center gap-2.5 px-3.5 py-3 border-b text-left transition-all  active:opacity-60"
         style={{ backgroundColor: colors.card, borderColor: colors.border }}
       >
         <div className="w-10 h-10 rounded-[10px] flex items-center justify-center flex-shrink-0" style={{ backgroundColor: iconBg }}>
@@ -84,7 +84,7 @@ const OrderCard = memo(({ order, onPress, variant = 'list' }: OrderCardProps) =>
   return (
     <button
       onClick={() => onPress(order)}
-      className="w-full rounded-xl border p-3.5 flex flex-col gap-2 text-left transition-all hover:opacity-80 active:scale-[0.99]"
+      className="w-full rounded-xl border p-3.5 flex flex-col gap-2 text-left transition-all  active:scale-[0.99]"
       style={{ backgroundColor: colors.card, borderColor: colors.border }}
     >
       <div className="flex items-center gap-2.5">

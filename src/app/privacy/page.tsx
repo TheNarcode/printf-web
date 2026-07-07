@@ -3,11 +3,11 @@
 import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Sun, Moon, Printer, ArrowLeft } from 'lucide-react';
+import Header from '../../components/Header';
 import { useTheme } from '../../theme/ThemeContext';
 
 export default function PrivacyPage() {
-  const { colors, isDark, setMode } = useTheme();
+  const { colors } = useTheme();
   const router = useRouter();
 
   const section = (num: string, title: string, children: React.ReactNode) => (
@@ -31,30 +31,8 @@ export default function PrivacyPage() {
 
   return (
     <div style={{ minHeight: '100dvh', backgroundColor: colors.background, color: colors.text, fontFamily: 'var(--font-geist-sans), system-ui, sans-serif' }}>
-
-      {/* Header */}
-      <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem 1.5rem', backgroundColor: 'transparent', position: 'sticky', top: 0, zIndex: 50 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <Printer size={16} strokeWidth={1.8} style={{ color: colors.text }} />
-          <span style={{ fontSize: '0.9375rem', fontWeight: 700, letterSpacing: '-0.02em', color: colors.text }}>printf</span>
-        </div>
-        <button onClick={() => setMode(isDark ? 'light' : 'dark')} style={{ color: colors.text, padding: '0.5rem', borderRadius: '50%', background: 'none', border: 'none', cursor: 'pointer' }} aria-label="Toggle theme">
-          {isDark ? <Sun size={18} strokeWidth={2} /> : <Moon size={18} strokeWidth={2} />}
-        </button>
-      </header>
-
+      <Header title="Privacy Policy" showBack onBack={() => router.back()} />
       <main style={{ maxWidth: '42rem', margin: '0 auto', padding: '1.5rem 1.5rem 6rem' }}>
-
-        {/* Back */}
-        <button onClick={() => router.back()} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.375rem', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: colors.textSecondary, background: 'none', border: 'none', padding: 0, cursor: 'pointer', marginBottom: '2.5rem' }}>
-          <ArrowLeft size={12} strokeWidth={2.5} />Back
-        </button>
-
-        {/* Title */}
-        <div style={{ marginBottom: '2.5rem' }}>
-          <p style={{ fontFamily: 'var(--font-geist-mono), monospace', fontSize: '0.6875rem', letterSpacing: '0.12em', textTransform: 'uppercase', opacity: 0.4, marginBottom: '0.625rem' }}>Effective 7 July 2026</p>
-          <h1 style={{ fontSize: 'clamp(2.25rem, 5vw, 3.25rem)', fontWeight: 900, letterSpacing: '-0.04em', lineHeight: 1, color: colors.text, margin: 0 }}>Privacy Policy</h1>
-        </div>
 
         {section('01', 'Data We Collect', <>
           <p style={{ marginBottom: '0.75rem' }}>We collect the minimum necessary to operate the service:</p>
@@ -124,14 +102,6 @@ export default function PrivacyPage() {
           </div>
         </div>
       </main>
-
-      <footer style={{ borderTop: `1px solid ${colors.border}`, padding: '1.25rem 1.5rem', maxWidth: '42rem', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }}>
-        <span style={{ fontSize: '0.6875rem', fontFamily: 'var(--font-geist-mono), monospace', letterSpacing: '0.06em', color: colors.textMuted, opacity: 0.5 }}>printf © 2026 — The Narcode</span>
-        <div style={{ display: 'flex', gap: '1.25rem', alignItems: 'center' }}>
-          <a href="https://github.com/thenarcode" target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: colors.textSecondary, textDecoration: 'none', opacity: 0.6 }}>GitHub</a>
-          <Link href="/terms" style={{ fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: colors.textSecondary, textDecoration: 'none', opacity: 0.6 }}>Terms</Link>
-        </div>
-      </footer>
     </div>
   );
 }

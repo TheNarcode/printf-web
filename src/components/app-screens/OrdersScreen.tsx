@@ -118,12 +118,12 @@ export default function OrdersScreen({ initialFilter: _ignore }: { initialFilter
       )}
       <Header title="All Orders" showBack onBack={pop}
         rightElement={
-          <button onClick={handleRefresh} disabled={refreshing} className="p-2 transition-opacity hover:opacity-70" aria-label="Refresh">
+          <button onClick={handleRefresh} disabled={refreshing} className="p-2 transition-opacity " aria-label="Refresh">
             <RefreshCw size={16} color={colors.text} className={refreshing ? 'animate-spin' : ''} />
           </button>
         }
       />
-      <div className="shrink-0 px-6 pb-2 w-full max-w-2xl mx-auto relative z-10">
+      <div className="shrink-0 px-6 pt-6 pb-2 w-full max-w-2xl mx-auto relative z-10">
         <h1 className="text-2xl font-bold tracking-tight mb-0.5" style={{ color: colors.text }}>Manage and track orders</h1>
         
         <div className="flex items-center gap-2 mt-5 mb-3 relative z-10">
@@ -135,7 +135,7 @@ export default function OrdersScreen({ initialFilter: _ignore }: { initialFilter
           </div>
           
           <button 
-            className="w-11 h-11 flex-shrink-0 flex items-center justify-center rounded-xl border transition-all hover:opacity-80" 
+            className="w-11 h-11 flex-shrink-0 flex items-center justify-center rounded-xl border transition-all " 
             style={{ backgroundColor: colors.surface, borderColor: colors.border }}
             onClick={() => setShowDropdown(!showDropdown)}
           >
@@ -149,7 +149,7 @@ export default function OrdersScreen({ initialFilter: _ignore }: { initialFilter
                 return (
                   <button
                     key={f.key}
-                    className="flex items-center gap-3 px-3.5 py-2.5 w-full text-left transition-colors hover:bg-black/5 dark:hover:bg-white/5"
+                    className="flex items-center gap-3 px-3.5 py-2.5 w-full text-left transition-colors  "
                     onClick={() => toggleFilter(f.key)}
                   >
                     <div className="w-4 h-4 rounded flex items-center justify-center border" style={{ borderColor: active ? colors.primary : colors.border, backgroundColor: active ? colors.primary : 'transparent' }}>
@@ -164,7 +164,7 @@ export default function OrdersScreen({ initialFilter: _ignore }: { initialFilter
         </div>
       </div>
       <main className="flex-1 overflow-y-auto pb-10 relative z-0">
-        <div className="max-w-2xl mx-auto px-6 pt-2">
+        <div className="max-w-2xl mx-auto px-6 pt-6">
           {filteredOrders.length === 0 ? (
             <div className="py-12 flex flex-col items-center gap-1.5">
               <span className="text-sm" style={{ color: colors.textMuted }}>No orders found</span>

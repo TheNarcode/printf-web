@@ -14,25 +14,27 @@ interface HeaderProps {
   transparent?: boolean;
 }
 
-export default function Header({ title, subtitle, showBack, onBack, rightElement, showBrand, transparent = true }: HeaderProps) {
+export default function Header({ title, subtitle, showBack, onBack, rightElement, showBrand, transparent = false }: HeaderProps) {
   const { colors } = useTheme();
 
   return (
     <header
-      className={`flex items-center justify-between px-6 py-4 sticky top-0 z-50 ${transparent ? '' : 'border-b backdrop-blur-md'}`}
+      className={`sticky top-0 z-50 px-6 pt-4 ${transparent ? '' : 'backdrop-blur-md'}`}
       style={transparent ? {
         backgroundColor: 'transparent',
-        borderColor: 'transparent',
       } : {
         backgroundColor: colors.background + 'EE',
-        borderColor: colors.border,
       }}
     >
-      <div className="flex items-center gap-2.5 flex-1 min-w-0">
+      <div 
+        className={`flex items-center justify-between w-full pb-4 ${transparent ? '' : 'border-b-[1.5px]'}`}
+        style={transparent ? {} : { borderColor: colors.border }}
+      >
+        <div className="flex items-center gap-2.5 flex-1 min-w-0">
         {showBack && (
           <button
             onClick={onBack}
-            className="p-2 rounded-lg transition-colors hover:opacity-70 flex-shrink-0"
+            className="p-2 rounded-lg transition-colors  flex-shrink-0"
             style={{ color: colors.text }}
             aria-label="Go back"
           >
@@ -60,6 +62,7 @@ export default function Header({ title, subtitle, showBack, onBack, rightElement
           </span>
         )}
         {rightElement}
+      </div>
       </div>
     </header>
   );

@@ -194,13 +194,10 @@ export function PrintJobProvider({ children }: { children: React.ReactNode }) {
       fileSettings: state.fileSettings,
       orders: state.orders,
       addFiles, removeFile, clearFiles, updateFileSettings,
-      getFilesWithSettings, getOrderSummary, createOrder, addOrder, refreshOrders, resetFlow,
+      getFilesWithSettings, getOrderSummary, createOrder, addOrder, refreshOrders: loadOrders,
+      resetFlow,
     }),
-    [
-      state.files, state.fileSettings, state.orders,
-      addFiles, removeFile, clearFiles, updateFileSettings,
-      getFilesWithSettings, getOrderSummary, createOrder, addOrder, refreshOrders, resetFlow,
-    ],
+    [state.files, state.fileSettings, state.orders, addFiles, removeFile, clearFiles, updateFileSettings, getFilesWithSettings, getOrderSummary, createOrder, addOrder, loadOrders, resetFlow]
   );
 
   return <PrintJobContext.Provider value={value}>{children}</PrintJobContext.Provider>;

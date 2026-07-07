@@ -38,7 +38,7 @@ export default function SettingsScreen() {
       <Header title="Settings" showBack onBack={pop} />
 
       <main className="flex-1 overflow-y-auto pb-10">
-        <div className="page-container px-6 py-4 flex flex-col gap-5">
+        <div className="page-container px-6 pt-6 pb-4 flex flex-col gap-5">
 
           {/* Profile card */}
           <div className="rounded-2xl border p-4" style={{ backgroundColor: colors.card, borderColor: colors.border }}>
@@ -57,7 +57,7 @@ export default function SettingsScreen() {
               </div>
               <button
                 onClick={handleSignOut}
-                className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 transition-opacity hover:opacity-70"
+                className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 transition-opacity "
                 style={{ backgroundColor: colors.dangerBg }}
                 aria-label="Sign out"
               >
@@ -100,13 +100,13 @@ export default function SettingsScreen() {
 
           <div className="flex flex-col items-center justify-center gap-1.5 mt-4" style={{ color: colors.textMuted }}>
             <p className="text-[10px] font-mono tracking-widest opacity-50 uppercase">printf v1.0.0</p>
-            <a href="https://github.com/thenarcode" target="_blank" rel="noopener noreferrer" className="text-[11px] font-bold tracking-wider hover:underline transition-all">
+            <a href="https://github.com/thenarcode" target="_blank" rel="noopener noreferrer" className="text-[11px] font-bold tracking-wider underline underline-offset-2  transition-all" style={{ color: colors.text }}>
               The Narcode
             </a>
             <div className="flex items-center gap-3 mt-1 text-[10px] font-bold uppercase tracking-wider opacity-60">
-              <Link href="/terms" className="hover:underline transition-opacity hover:opacity-100">Terms</Link>
+              <Link href="/terms" className=" transition-opacity ">Terms</Link>
               <span>|</span>
-              <Link href="/privacy" className="hover:underline transition-opacity hover:opacity-100">Privacy</Link>
+              <Link href="/privacy" className=" transition-opacity ">Privacy</Link>
             </div>
           </div>
         </div>

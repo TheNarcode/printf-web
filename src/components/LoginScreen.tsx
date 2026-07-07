@@ -8,6 +8,7 @@ import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../theme/ThemeContext';
 import GoogleLogo from './GoogleLogo';
 import Header from './Header';
+import Link from 'next/link';
 
 const SLIDES = [
   {
@@ -112,7 +113,7 @@ export default function LoginScreen() {
           rightElement={
             <button
               onClick={() => setMode(isDark ? 'light' : 'dark')}
-              className="p-2 rounded-full transition-colors hover:bg-black/5 dark:hover:bg-white/10"
+              className="p-2 rounded-full transition-colors  "
               style={{ color: colors.text }}
               aria-label="Toggle theme"
             >
@@ -200,7 +201,7 @@ export default function LoginScreen() {
             <button
               onClick={() => signInWithGoogle()}
               disabled={isLoading}
-              className="w-full flex items-center justify-center gap-3 rounded-[100px] border transition-transform active:scale-95 disabled:opacity-60 shadow-lg hover:shadow-xl"
+              className="w-full flex items-center justify-center gap-3 rounded-[100px] border transition-transform active:scale-95 disabled:opacity-60 shadow-lg "
               style={{
                 backgroundColor: colors.card,
                 borderColor: colors.border,
@@ -224,9 +225,9 @@ export default function LoginScreen() {
             <div className="flex justify-center mt-4">
               <p className="text-[11px] text-center leading-4 opacity-70" style={{ color: colors.textMuted }}>
                 By signing in, you agree to our{' '}
-                <a href="/terms" className="font-semibold underline hover:opacity-80 transition-opacity">Terms of Service</a>
+                <Link href="/terms" className="font-semibold underline  transition-opacity">Terms of Usage</Link>
                 {' '}and{' '}
-                <a href="/privacy" className="font-semibold underline hover:opacity-80 transition-opacity">Privacy Policy</a>.
+                <Link href="/privacy" className="font-semibold underline  transition-opacity">Privacy Policy</Link>.
               </p>
             </div>
           </div>

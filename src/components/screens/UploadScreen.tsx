@@ -63,7 +63,7 @@ export default function UploadScreen() {
       <Header title="Upload Files" subtitle="Step 1 of 3" showBack onBack={handleBack} />
 
       <main className="flex-1 overflow-y-auto pb-8 flex flex-col">
-        <div className={`page-container px-6 pt-4 flex-1 flex flex-col ${files.length === 0 ? 'justify-center pb-20' : ''}`}>
+        <div className={`page-container px-6 pt-6 flex-1 flex flex-col ${files.length === 0 ? 'justify-center pb-20' : ''}`}>
 
           <FileDropZone onFiles={handleFiles} />
 
@@ -77,8 +77,8 @@ export default function UploadScreen() {
           {files.length > 0 && (
             <div className="mt-7 flex flex-col gap-3">
 
-              {files.map(file => (
-                <FileCard key={file.id} file={file} onRemove={removeFile} />
+              {files.map(f => (
+                <FileCard key={f.id} file={f} onRemove={removeFile} />
               ))}
             </div>
           )}

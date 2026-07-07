@@ -67,7 +67,7 @@ export default function Btn({
       className={[
         'inline-flex items-center justify-center gap-2.5 font-semibold',
         'transition-all active:scale-[0.97] cursor-pointer',
-        'hover:opacity-85 disabled:opacity-40 disabled:cursor-not-allowed',
+        ' disabled:opacity-40 disabled:cursor-not-allowed',
         sizeClasses[size],
         fullWidth ? 'w-full' : '',
         className,

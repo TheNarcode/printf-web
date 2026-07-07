@@ -26,7 +26,7 @@ const FileCard = memo(({ file, onRemove }: FileCardProps) => {
       style={{ backgroundColor: colors.card, borderColor: colors.border }}
     >
       <div
-        className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
+        className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
         style={{ backgroundColor: fileColor + '15' }}
       >
         <Icon size={18} color={fileColor} strokeWidth={1.8} />
@@ -42,7 +42,7 @@ const FileCard = memo(({ file, onRemove }: FileCardProps) => {
       {onRemove && (
         <button
           onClick={handleRemove}
-          className="p-1.5 rounded-lg transition-opacity hover:opacity-70 flex-shrink-0"
+          className="p-1.5 rounded-lg transition-opacity shrink-0"
           aria-label={`Remove ${file.name}`}
         >
           <X size={14} color={colors.textMuted} strokeWidth={2} />

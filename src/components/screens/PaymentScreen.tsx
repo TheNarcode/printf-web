@@ -7,12 +7,12 @@ import { useAuth } from '../../context/AuthContext';
 import { usePrintJob } from '../../context/PrintJobContext';
 import { useAppNav } from '../../app/dashboard/layout';
 import { useNetwork } from '../../context/NetworkContext';
-import { CustomAlertAPI } from '../../context/AlertContext';
+
 import Header from '../Header';
 import Btn from '../Btn';
 import { formatCurrency, formatFileSize } from '../../utils/formatters';
 import { createOrder, buildPrintConfig } from '../../services/api';
-import { getFileId, startUploads } from '../../services/fileUploadManager';
+import { getFileId } from '../../services/fileUploadManager';
 import { useRouter } from 'next/navigation';
 
 import { RAZORPAY_KEY, processRazorpayPayment } from '../../utils/razorpay';
@@ -36,7 +36,6 @@ export default function PaymentScreen() {
   const [isPaying, setIsPaying] = useState(false);
   const [statusText, setStatusText] = useState('');
 
-
   const handlePay = useCallback(async () => {
     if (!assertOnline()) return;
     setIsPaying(true);
@@ -45,12 +44,9 @@ export default function PaymentScreen() {
       if (!token) throw new Error('Authentication required');
 
       setStatusText('Preparing files…');
-      const uploadableFiles = files.map(f => ({ id: f.id, file: f.file!, name: f.name, type: f.type })).filter(f => f.file);
-      startUploads(uploadableFiles, getValidToken);
-
       const fileIds: Record<string, string> = {};
       for (const item of items) {
-        fileIds[item.file.id] = await getFileId(item.file.id);
+        fileIds[item.file.id] = getFileId(item.file.id);
       }
 
       setStatusText('Creating order…');
@@ -105,7 +101,7 @@ export default function PaymentScreen() {
       <Header title="Payment" subtitle="Step 3 of 3" showBack onBack={handleBack} />
 
       <main className="flex-1 overflow-y-auto pb-8">
-        <div className="max-w-3xl mx-auto px-6 pt-5">
+        <div className="max-w-3xl mx-auto px-6 pt-6">
           <div className="flex flex-col md:flex-row md:gap-6 gap-5">
 
             {/* Files list */}

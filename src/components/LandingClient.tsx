@@ -50,7 +50,7 @@ export default function LandingClient() {
             <div className="flex items-center gap-4">
               <button
                 onClick={() => setMode(mode === 'dark' ? 'light' : mode === 'light' ? 'system' : 'dark')}
-                className="transition-opacity hover:opacity-50"
+                className="transition-opacity "
                 style={{ color: colors.text }}
                 aria-label="Toggle theme"
               >
@@ -58,7 +58,7 @@ export default function LandingClient() {
               </button>
               <button
                 onClick={() => router.push('/print')}
-                className="text-[13px] font-bold tracking-tight uppercase hover:opacity-50 transition-opacity"
+                className="text-[13px] font-bold tracking-tight uppercase  transition-opacity"
                 style={{ color: colors.text }}
               >
                 Sign In
@@ -83,7 +83,7 @@ export default function LandingClient() {
         </p>
         <button
           onClick={() => router.push('/print')}
-          className="h-14 px-10 text-[15px] font-bold uppercase tracking-widest transition-transform hover:scale-105 active:scale-95"
+          className="h-14 px-10 text-[15px] font-bold uppercase tracking-widest transition-transform  active:scale-95"
           style={{ backgroundColor: colors.text, color: colors.background }}
         >
           Start Printing
@@ -160,8 +160,8 @@ export default function LandingClient() {
             printf © 2026
           </div>
           <div className="flex gap-8">
-            <a href="/terms" className="text-[12px] font-bold tracking-wider uppercase transition-opacity hover:opacity-50" style={{ color: colors.textSecondary }}>Terms</a>
-            <a href="/privacy" className="text-[12px] font-bold tracking-wider uppercase transition-opacity hover:opacity-50" style={{ color: colors.textSecondary }}>Privacy</a>
+            <a href="/terms" className="text-[12px] font-bold tracking-wider uppercase transition-opacity " style={{ color: colors.textSecondary }}>Terms</a>
+            <a href="/privacy" className="text-[12px] font-bold tracking-wider uppercase transition-opacity " style={{ color: colors.textSecondary }}>Privacy</a>
           </div>
         </div>
       </footer>

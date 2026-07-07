@@ -62,7 +62,7 @@ const FileDropZone = memo(({ onFiles }: FileDropZoneProps) => {
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
-      className="w-full rounded-xl border-2 border-dashed py-10 px-5 flex flex-col items-center gap-2 transition-all cursor-pointer hover:opacity-80"
+      className="w-full rounded-xl border-2 border-dashed py-10 px-5 flex flex-col items-center gap-2 transition-all cursor-pointer "
       style={{
         borderColor: isDragging ? colors.primary : colors.borderDashed,
         backgroundColor: isDragging ? colors.primaryBg : colors.shimmer,
@@ -75,10 +75,10 @@ const FileDropZone = memo(({ onFiles }: FileDropZoneProps) => {
         <CloudUpload size={24} color={colors.textSecondary} strokeWidth={1.5} />
       </div>
       <span className="text-lg font-bold" style={{ color: colors.text }}>
-        {isDragging ? 'Drop files here' : 'Click or drag to upload files'}
+        {isDragging ? 'Drop files here' : 'Upload files here'}
       </span>
       <span className="text-xs text-center" style={{ color: colors.textMuted }}>
-        PDF, DOC, DOCX, JPG, PNG supported
+        PDF, JPEG, JPG, PNG supported
       </span>
     </button>
   );

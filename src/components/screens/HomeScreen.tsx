@@ -62,20 +62,19 @@ export default function HomeScreen() {
     <div className="h-[100dvh] flex flex-col overflow-hidden" style={{ backgroundColor: colors.background }}>
       <Header
         showBrand
-        transparent
         rightElement={
           <div className="flex items-center gap-2">
             <button
               onClick={handleRefresh}
               disabled={refreshing}
-              className="p-2 transition-opacity hover:opacity-70"
+              className="p-2 transition-opacity "
               aria-label="Refresh"
             >
               <RefreshCw size={16} color={colors.text} className={refreshing ? 'animate-spin' : ''} />
             </button>
             <button
               onClick={() => push({ id: 'settings', transition: 'modal' })}
-              className="p-2 transition-opacity hover:opacity-70"
+              className="p-2 transition-opacity "
               aria-label="Settings"
             >
               <Settings size={20} color={colors.text} />
@@ -85,7 +84,7 @@ export default function HomeScreen() {
       />
 
       <main className="flex-1 overflow-y-auto pb-20">
-        <div className="page-container px-6 pt-4">
+        <div className="page-container px-6 pt-6">
           <div className="mb-6">
             <h1 className="text-2xl font-bold tracking-tight mb-0.5" style={{ color: colors.text, letterSpacing: '-0.5px' }}>
               {getGreeting()}, {user?.name ? user.name.split(' ')[0] : 'there'}.
@@ -97,7 +96,7 @@ export default function HomeScreen() {
               <button
                 key={s.key}
                 onClick={() => push({ id: 'orders', transition: 'push', params: { filter: s.key } })}
-                className="p-3 rounded-xl border flex flex-col gap-1 text-left transition-all hover:opacity-80"
+                className="p-3 rounded-xl border flex flex-col gap-1 text-left transition-all "
                 style={{ backgroundColor: colors.card, borderColor: colors.border }}
               >
                 <div className="flex items-center justify-between">
@@ -113,7 +112,7 @@ export default function HomeScreen() {
             <h2 className="text-base font-semibold" style={{ color: colors.text }}>Recent Orders</h2>
             <button
               onClick={() => push({ id: 'orders', transition: 'push' })}
-              className="flex items-center gap-0.5 transition-opacity hover:opacity-70"
+              className="flex items-center gap-0.5 transition-opacity "
             >
               <span className="text-xs font-medium" style={{ color: colors.textSecondary }}>View All</span>
               <ChevronRight size={12} color={colors.textSecondary} strokeWidth={2} />
