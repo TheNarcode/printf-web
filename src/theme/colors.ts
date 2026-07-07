@@ -37,6 +37,9 @@ export const lightColors = {
   collected: '#9333EA',
   collectedBg: 'rgba(147,51,234,0.08)',
   collectedBorder: 'rgba(147,51,234,0.20)',
+  info: '#3B82F6',
+  infoBg: 'rgba(59,130,246,0.08)',
+  infoBorder: 'rgba(59,130,246,0.20)',
   shimmer: 'rgba(24,24,27,0.02)',
   shadow: '#A1A1AA',
 };
@@ -70,6 +73,9 @@ export const darkColors: ThemeColors = {
   collected: '#A855F7',
   collectedBg: 'rgba(168,85,247,0.10)',
   collectedBorder: 'rgba(168,85,247,0.25)',
+  info: '#3B82F6',
+  infoBg: 'rgba(59,130,246,0.15)',
+  infoBorder: 'rgba(59,130,246,0.30)',
   shimmer: 'rgba(244,244,245,0.03)',
   shadow: '#000000',
 };

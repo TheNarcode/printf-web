@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { RefreshCw, Search, ListFilter, Check } from 'lucide-react';
 import { useTheme } from '../../theme/ThemeContext';
 import { usePrintJob } from '../../context/PrintJobContext';
+import { useNetwork } from '../../context/NetworkContext';
 import Header from '../Header';
 import OrderCard from '../OrderCard';
 import Btn from '../Btn';
@@ -25,6 +26,7 @@ export default function OrdersScreen({ initialFilter }: { initialFilter?: string
   const { orders, refreshOrders } = usePrintJob();
   const { pop, push } = useAppNav();
   const { payOrder } = usePayOrder();
+  const { assertOnline } = useNetwork();
   const [refreshing, setRefreshing] = useState(false);
   const lastRefresh = useRef(0);
 
@@ -49,9 +51,10 @@ export default function OrdersScreen({ initialFilter }: { initialFilter?: string
   }, [refreshOrders]);
 
   const handleRefresh = useCallback(async () => {
+    if (!assertOnline()) return;
     setRefreshing(true);
     try { await refreshOrders(); } finally { setRefreshing(false); }
-  }, [refreshOrders]);
+  }, [refreshOrders, assertOnline]);
 
   const toggleFilter = useCallback((f: Filter) => {
     setSelectedFilters(prev => {
@@ -105,7 +108,7 @@ export default function OrdersScreen({ initialFilter }: { initialFilter?: string
       <Header title="All Orders" showBack onBack={pop}
         rightElement={
           <button onClick={handleRefresh} disabled={refreshing} className="p-2 transition-opacity hover:opacity-70" aria-label="Refresh">
-            <RefreshCw size={16} color={colors.textMuted} className={refreshing ? 'animate-spin' : ''} />
+            <RefreshCw size={16} color={colors.text} className={refreshing ? 'animate-spin' : ''} />
           </button>
         }
       />

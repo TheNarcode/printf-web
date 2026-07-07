@@ -212,14 +212,13 @@ input::placeholder, textarea::placeholder {
 
 /* ── Orb Animations ──────────────────────────────────────────────── */
 @keyframes orb1 {
-  0% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(80px, -120px) scale(1.15); }
-  66% { transform: translate(-60px, 60px) scale(0.9); }
-  100% { transform: translate(0, 0) scale(1); }
+  0% { transform: translate(0, 0); }
+  50% { transform: translate(6vh, 10vh); }
+  100% { transform: translate(0, 0); }
 }
 
-@keyframes orb3 {
-  0% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(100px, 60px) scale(1.1); }
-  100% { transform: translate(0, 0) scale(1); }
+@keyframes orb2 {
+  0% { transform: translate(0, 0); }
+  50% { transform: translate(-7.5vh, -11vh); }
+  100% { transform: translate(0, 0); }
 }

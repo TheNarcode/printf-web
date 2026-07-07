@@ -5,6 +5,7 @@ import { useTheme } from '../../theme/ThemeContext';
 import { usePrintJob } from '../../context/PrintJobContext';
 import { useAppNav } from '../../app/dashboard/layout';
 import { useAuth } from '../../context/AuthContext';
+import { useNetwork } from '../../context/NetworkContext';
 import Header from '../Header';
 import FileDropZone from '../FileDropZone';
 import FileCard from '../FileCard';
@@ -19,6 +20,7 @@ export default function UploadScreen() {
   const { files, addFiles, removeFile, resetFlow } = usePrintJob();
   const { getValidToken } = useAuth();
   const { push, pop } = useAppNav();
+  const { assertOnline } = useNetwork();
   const [processing, setProcessing] = useState(false);
 
   const handleFiles = useCallback(async (rawFiles: File[]) => {
@@ -50,10 +52,11 @@ export default function UploadScreen() {
   }, [resetFlow, pop]);
 
   const handleContinue = useCallback(() => {
+    if (!assertOnline()) return;
     const uploadableFiles = files.map(f => ({ id: f.id, file: f.file!, name: f.name, type: f.type })).filter(f => f.file);
     startUploads(uploadableFiles, getValidToken);
     push({ id: 'print_settings', transition: 'push' });
-  }, [files, getValidToken, push]);
+  }, [files, getValidToken, push, assertOnline]);
 
   return (
     <div className="h-[100dvh] flex flex-col overflow-hidden" style={{ backgroundColor: colors.background }}>
@@ -83,7 +86,7 @@ export default function UploadScreen() {
       </main>
 
       {files.length > 0 && (
-        <div className="flex-shrink-0 px-6 py-5 z-30" style={{ backgroundColor: colors.background }}>
+        <div className="flex-shrink-0 px-6 py-5 border-t z-30" style={{ backgroundColor: colors.card, borderColor: colors.border }}>
           <div className="page-container flex flex-col items-center">
             <span className="text-[13px] font-medium mb-3" style={{ color: colors.textMuted }}>
               {files.length} {files.length === 1 ? 'file' : 'files'} selected ({formatFileSize(files.reduce((s, f) => s + f.size, 0))})

@@ -9,6 +9,7 @@ import {
 import { useTheme } from '../../theme/ThemeContext';
 import { usePrintJob } from '../../context/PrintJobContext';
 import { useAppNav } from '../../app/dashboard/layout';
+import { useNetwork } from '../../context/NetworkContext';
 import Header from '../Header';
 import Btn from '../Btn';
 import type { PrintSettings, UploadedFile } from '../../types';
@@ -117,6 +118,7 @@ export default function PrintSettingsScreen() {
   const { colors } = useTheme();
   const { files, fileSettings, updateFileSettings } = usePrintJob();
   const { push, pop } = useAppNav();
+  const { assertOnline } = useNetwork();
   const router = useRouter();
 
   useEffect(() => {
@@ -133,6 +135,42 @@ export default function PrintSettingsScreen() {
   const [thumbLoading, setThumbLoading]     = useState(false);
   const [currentSheet, setCurrentSheet]     = useState(0);
   const carouselRef                         = useRef<HTMLDivElement>(null);
+  // Tracks whether we pushed a synthetic history entry for the fullscreen overlay.
+  // Must call history.back() when closing without popstate to avoid a phantom entry.
+  const fullscreenHistoryRef = useRef(false);
+
+  // Closes fullscreen and pops the synthetic history entry (used by X button & Escape).
+  const handleCloseFullscreen = useCallback(() => {
+    setShowFullscreen(false);
+    if (fullscreenHistoryRef.current) {
+      fullscreenHistoryRef.current = false;
+      window.history.back();
+    }
+  }, []);
+
+  // Register keyboard and popstate listeners while fullscreen is open.
+  useEffect(() => {
+    if (!showFullscreen) return;
+    // Push a synthetic entry so the browser back button can dismiss the overlay.
+    window.history.pushState({ fullscreen: true }, '');
+    fullscreenHistoryRef.current = true;
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') handleCloseFullscreen();
+    };
+    // popstate fires when the user presses browser back — the entry is already
+    // gone so we just close the overlay without calling history.back().
+    const onPop = () => {
+      fullscreenHistoryRef.current = false;
+      setShowFullscreen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    window.addEventListener('popstate', onPop);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      window.removeEventListener('popstate', onPop);
+    };
+  }, [showFullscreen, handleCloseFullscreen]);
 
   const file     = files[selectedIdx];
   const settings = file ? fileSettings[file.id] : null;
@@ -278,7 +316,6 @@ export default function PrintSettingsScreen() {
               <div className="flex items-center justify-between mb-1.5 px-0.5 min-h-[28px]">
                 <span className="text-[9px] font-bold tracking-widest uppercase" style={{ color: colors.textMuted }}>PRINT PREVIEW</span>
                 <div className="flex items-center gap-2">
-                  {isBW && <span className="flex items-center gap-1 px-2 py-0.5 rounded border text-[10px]" style={{ backgroundColor: colors.card, borderColor: colors.border, color: colors.textSecondary }}><Info size={10} />B&W</span>}
                   <button onClick={() => setShowFullscreen(true)} className="p-1 transition-opacity hover:opacity-70">
                     <Maximize2 size={14} color={colors.textMuted} strokeWidth={2} />
                   </button>
@@ -364,7 +401,7 @@ export default function PrintSettingsScreen() {
 
       <div className="flex-shrink-0 px-6 py-4 border-t z-30" style={{ backgroundColor: colors.card, borderColor: colors.border }}>
         <div className="page-container-wide">
-          <Btn variant="solid" size="lg" fullWidth onClick={() => push({ id: 'payment', transition: 'push' })} disabled={!!pageRangeError}>
+          <Btn variant="solid" size="lg" fullWidth onClick={() => { if (!assertOnline()) return; push({ id: 'payment', transition: 'push' }); }} disabled={!!pageRangeError}>
             Proceed to Payment
           </Btn>
         </div>
@@ -375,7 +412,7 @@ export default function PrintSettingsScreen() {
         <div className="absolute inset-0 z-[9999] flex flex-col animate-fade-in" style={{ backgroundColor: colors.background }}>
           <div className="flex items-center justify-between px-6 py-3 border-b" style={{ borderColor: colors.border }}>
             <span className="text-sm font-semibold" style={{ color: colors.text }}>Print Preview</span>
-            <button onClick={() => setShowFullscreen(false)} className="p-2 hover:opacity-70"><X size={18} color={colors.textMuted} strokeWidth={2} /></button>
+            <button onClick={handleCloseFullscreen} className="p-2 hover:opacity-70"><X size={18} color={colors.textMuted} strokeWidth={2} /></button>
           </div>
           <div className="flex-1 flex flex-col items-center justify-center gap-4 p-6">
             <PreviewSheet sheetIndex={currentSheet} selectedPages={selectedPages} pps={pps} thumbnails={thumbnails} thumbLoading={thumbLoading} isImage={isImage} isBW={isBW} file={file} paperW={fsPaperW} paperH={fsPaperH} />

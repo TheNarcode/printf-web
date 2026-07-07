@@ -1,6 +1,6 @@
 import React from 'react';
-import OnboardingScreen from '../components/OnboardingScreen';
+import LoginScreen from '../components/LoginScreen';
 
 export default function RootPage() {
-  return <OnboardingScreen />;
+  return <LoginScreen />;
 }

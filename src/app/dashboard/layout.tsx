@@ -15,6 +15,8 @@ const AppNavContext = createContext({
 export function useAppNav() { return useContext(AppNavContext); }
 
 import { useTheme } from '../../theme/ThemeContext';
+import { NetworkProvider } from '../../context/NetworkContext';
+import NetworkBanner from '../../components/NetworkBanner';
 
 export function AppNavigatorProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -106,12 +108,15 @@ import { Suspense } from 'react';
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
     <Suspense fallback={null}>
-      <AppNavigatorProvider>
-        <DeepLinkHandler />
-        <div className="flex-1 flex flex-col relative w-full h-[100dvh] overflow-hidden">
-          {children}
-        </div>
-      </AppNavigatorProvider>
+      <NetworkProvider>
+        <AppNavigatorProvider>
+          <DeepLinkHandler />
+          <div className="flex-1 flex flex-col relative w-full h-[100dvh] overflow-hidden">
+            {children}
+          </div>
+          <NetworkBanner />
+        </AppNavigatorProvider>
+      </NetworkProvider>
     </Suspense>
   );
 }

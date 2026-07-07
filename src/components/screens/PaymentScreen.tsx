@@ -6,6 +6,7 @@ import { useTheme } from '../../theme/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
 import { usePrintJob } from '../../context/PrintJobContext';
 import { useAppNav } from '../../app/dashboard/layout';
+import { useNetwork } from '../../context/NetworkContext';
 import { CustomAlertAPI } from '../../context/AlertContext';
 import Header from '../Header';
 import Btn from '../Btn';
@@ -22,6 +23,7 @@ export default function PaymentScreen() {
   const { getValidToken, user } = useAuth();
   const { pop } = useAppNav();
   const router = useRouter();
+  const { assertOnline } = useNetwork();
   
   const { items, fee, total } = useMemo(() => getOrderSummary(), [getOrderSummary]);
 
@@ -36,6 +38,7 @@ export default function PaymentScreen() {
 
 
   const handlePay = useCallback(async () => {
+    if (!assertOnline()) return;
     setIsPaying(true);
     try {
       const token = await getValidToken();

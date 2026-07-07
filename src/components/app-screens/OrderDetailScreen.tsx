@@ -45,7 +45,7 @@ export default function OrderDetailScreen({ orderId }: { orderId: string }) {
   }, [order, fetchAttempts, refreshOrders]);
 
   const screenBg =  colors.background;
-  const slipBg = isDark ? '#27272A' : '#e0e0e0';;
+  const slipBg = isDark ? '#27272A' : '#eeeeee';;
   const sepColor = colors.textMuted + '70';
 
   if (!order) {
@@ -71,12 +71,14 @@ export default function OrderDetailScreen({ orderId }: { orderId: string }) {
     );
   }
 
+  const isUnpaid = order.status === 0 && !order.paid;
+  const isInProgress = order.status === 0 && order.paid;
   const isFailed = order.status === 2;
   const isDone = order.status === 1;
   const isCollected = order.status === 3;
-  const statusLabel = isCollected ? 'COLLECTED' : isDone ? 'COMPLETED' : isFailed ? 'FAILED' : 'PENDING';
-  const statusColor = isCollected ? colors.collected : isFailed ? colors.danger : isDone ? colors.success : colors.warning;
-  const statusBg = isCollected ? colors.collectedBg : isFailed ? colors.dangerBg : isDone ? colors.successBg : colors.warningBg;
+  const statusLabel = isCollected ? 'Collected' : isDone ? 'Completed' : isFailed ? 'Failed' : isUnpaid ? 'Unpaid' : 'In Progress';
+  const statusColor = isCollected ? colors.collected : isFailed ? colors.danger : isDone ? colors.success : isUnpaid ? colors.warning : colors.info;
+  const statusBg = isCollected ? colors.collectedBg : isFailed ? colors.dangerBg : isDone ? colors.successBg : isUnpaid ? colors.warningBg : colors.infoBg;
 
   return (
     <div className="h-[100dvh] flex flex-col overflow-hidden" style={{ backgroundColor: screenBg }}>

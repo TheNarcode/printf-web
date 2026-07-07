@@ -20,6 +20,7 @@ interface AuthContextValue {
   idToken: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  isAuthenticating: boolean;
   signInWithGoogle: () => void;
   signOut: () => void;
   getValidToken: () => Promise<string | null>;
@@ -30,6 +31,7 @@ const AuthContext = createContext<AuthContextValue>({
   idToken: null,
   isAuthenticated: false,
   isLoading: true,
+  isAuthenticating: false,
   signInWithGoogle: () => {},
   signOut: () => {},
   getValidToken: async () => null,
@@ -39,6 +41,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [idToken, setIdToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [foregroundUnsubscribe, setForegroundUnsubscribe] = useState<(() => void) | null>(null);
   const router = useRouter();
 
@@ -115,7 +118,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const auth = getFirebaseAuth();
     if (!auth) return;
     
-    setIsLoading(true);
+    setIsAuthenticating(true);
     try {
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
@@ -133,7 +136,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         CustomAlertAPI.alert('Login Failed', message);
       });
     } finally {
-      setIsLoading(false);
+      setIsAuthenticating(false);
     }
   }, []);
 
@@ -166,11 +169,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       idToken,
       isAuthenticated: user !== null,
       isLoading,
+      isAuthenticating,
       signInWithGoogle,
       signOut,
       getValidToken,
     }),
-    [user, idToken, isLoading, signInWithGoogle, signOut, getValidToken],
+    [user, idToken, isLoading, isAuthenticating, signInWithGoogle, signOut, getValidToken],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

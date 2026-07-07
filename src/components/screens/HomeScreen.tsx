@@ -1,10 +1,11 @@
 'use client';
 
 import React, { useCallback, useMemo, useState } from 'react';
-import { ChevronRight, CheckCircle2, RefreshCw, RefreshCcw, AlertCircle, Settings, Banknote } from 'lucide-react';
+import { ChevronRight, PrinterCheck, RefreshCw, ClipboardClock, PrinterX, Settings, BanknoteArrowUp } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../theme/ThemeContext';
 import { usePrintJob } from '../../context/PrintJobContext';
+import { useNetwork } from '../../context/NetworkContext';
 import Header from '../Header';
 import OrderCard from '../OrderCard';
 import FAB from '../FAB';
@@ -23,20 +24,25 @@ export default function HomeScreen() {
   const { orders, refreshOrders } = usePrintJob();
   const { user } = useAuth();
   const { push } = useAppNav();
+  const { assertOnline } = useNetwork();
   const [refreshing, setRefreshing] = useState(false);
 
   const handleRefresh = useCallback(async () => {
+    if (!assertOnline()) return;
     setRefreshing(true);
     try { await refreshOrders(); } finally { setRefreshing(false); }
-  }, [refreshOrders]);
+  }, [refreshOrders, assertOnline]);
 
-  const handleNewOrder  = useCallback(() => push({ id: 'upload', transition: 'push' }), [push]);
+  const handleNewOrder = useCallback(() => {
+    if (!assertOnline()) return;
+    push({ id: 'upload', transition: 'push' });
+  }, [push, assertOnline]);
 
   const handleOrderPress = useCallback((order: Order) => {
     push({ id: 'order_detail', transition: 'push', params: { orderId: order.id } });
   }, [push]);
 
-  const recentOrders = useMemo(() => orders.slice(0, 3), [orders]);
+  const recentOrders = useMemo(() => orders.slice(0, 4), [orders]);
 
   const counts = useMemo(() => ({
     paymentPending: orders.filter(o => o.status === 0 && !o.paid).length,
@@ -46,10 +52,10 @@ export default function HomeScreen() {
   }), [orders]);
 
   const stats = [
-    { key: 'payment_pending', Icon: Banknote,      count: counts.paymentPending, label: 'Payment Pending', isDanger: false },
-    { key: 'in_progress',     Icon: RefreshCcw,    count: counts.inProgress,     label: 'In Progress',     isDanger: false },
-    { key: 'completed',       Icon: CheckCircle2,  count: counts.completed,      label: 'To Collect',      isDanger: false },
-    { key: 'failed',          Icon: AlertCircle,   count: counts.failed,         label: 'Failed',          isDanger: false },
+    { key: 'payment_pending', Icon: BanknoteArrowUp, count: counts.paymentPending, label: 'Payment Pending', iconColor: colors.warning },
+    { key: 'in_progress',     Icon: ClipboardClock,    count: counts.inProgress,     label: 'In Progress',     iconColor: colors.info },
+    { key: 'completed',       Icon: PrinterCheck,  count: counts.completed,      label: 'To Collect',      iconColor: colors.success },
+    { key: 'failed',          Icon: PrinterX,      count: counts.failed,         label: 'Failed',          iconColor: colors.danger },
   ];
 
   return (
@@ -65,7 +71,7 @@ export default function HomeScreen() {
               className="p-2 transition-opacity hover:opacity-70"
               aria-label="Refresh"
             >
-              <RefreshCw size={16} color={colors.textMuted} className={refreshing ? 'animate-spin' : ''} />
+              <RefreshCw size={16} color={colors.text} className={refreshing ? 'animate-spin' : ''} />
             </button>
             <button
               onClick={() => push({ id: 'settings', transition: 'modal' })}
@@ -95,7 +101,7 @@ export default function HomeScreen() {
                 style={{ backgroundColor: colors.card, borderColor: colors.border }}
               >
                 <div className="flex items-center justify-between">
-                  <s.Icon size={16} color={s.isDanger ? colors.danger : colors.textMuted} strokeWidth={1.8} />
+                  <s.Icon size={16} color={s.iconColor} strokeWidth={1.8} />
                   <span className="text-[20px] font-bold leading-none" style={{ color: colors.text }}>{s.count}</span>
                 </div>
                 <span className="text-[11px] font-medium" style={{ color: colors.textSecondary }}>{s.label}</span>
@@ -116,8 +122,10 @@ export default function HomeScreen() {
 
           {recentOrders.length > 0 ? (
             <div className="flex flex-col gap-4">
-              {recentOrders.map(order => (
-                <OrderCard key={order.id} order={order} onPress={handleOrderPress} variant="list" />
+              {recentOrders.map((order, idx) => (
+                <div key={order.id} className={idx === 3 ? "hidden md:block" : ""}>
+                  <OrderCard order={order} onPress={handleOrderPress} variant="list" />
+                </div>
               ))}
             </div>
           ) : (

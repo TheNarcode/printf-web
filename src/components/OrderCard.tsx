@@ -14,7 +14,7 @@ interface OrderCardProps {
 
 export const getStatusStyle = (status: number, colors: Record<string, string>) => {
   switch (status) {
-    case 0: return { bg: colors.warningBg, text: colors.warning, border: colors.warningBorder, dot: colors.warning, label: 'Pending' };
+    case 0: return { bg: colors.infoBg, text: colors.info, border: colors.infoBorder, dot: colors.info, label: 'Pending' };
     case 1: return { bg: colors.successBg, text: colors.success, border: colors.successBorder, dot: colors.success, label: 'Completed' };
     case 2: return { bg: colors.dangerBg, text: colors.danger, border: colors.dangerBorder, dot: colors.danger, label: 'Error' };
     case 3: return { bg: colors.collectedBg, text: colors.collected, border: colors.collectedBorder, dot: colors.collected, label: 'Collected' };
@@ -37,7 +37,7 @@ const OrderCard = memo(({ order, onPress, variant = 'list' }: OrderCardProps) =>
     ? { bg: colors.successBg, text: colors.success, label: 'Completed' }
     : order.status === 3
     ? { bg: colors.collectedBg, text: colors.collected, label: 'Collected' }
-    : { bg: colors.warningBg, text: colors.warning, label: 'Pending' };
+    : { bg: colors.infoBg, text: colors.info, label: 'Pending' };
 
   if (variant === 'home') {
     return (
@@ -63,12 +63,11 @@ const OrderCard = memo(({ order, onPress, variant = 'list' }: OrderCardProps) =>
                 className="px-2 py-0.5 rounded-full border text-[9px] font-bold tracking-wider cursor-pointer"
                 style={{ backgroundColor: colors.warningBg, borderColor: colors.warning, color: colors.warning }}
               >
-                PAY NOW
+                Unpaid
               </span>
             ) : (
-              <span className="flex items-center gap-1 px-2 py-0.5 rounded-full border flex-shrink-0 text-[9px] font-bold tracking-wider"
+              <span className="px-2 py-0.5 rounded-full border shrink-0 text-[9px] font-bold tracking-wider"
                 style={{ backgroundColor: statusStyle.bg, borderColor: statusStyle.border, color: statusStyle.text }}>
-                <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: statusStyle.dot }} />
                 {statusStyle.label}
               </span>
             )}
@@ -97,14 +96,14 @@ const OrderCard = memo(({ order, onPress, variant = 'list' }: OrderCardProps) =>
             <span className="text-sm font-semibold truncate" style={{ color: colors.text }}>{order.orderRef}</span>
             {order.status === 0 && !order.paid && order.paymentRequestId ? (
               <span
-                className="px-2 py-0.5 rounded-full border text-[9px] font-bold uppercase tracking-wider"
+                className="px-2 py-0.5 rounded-full border text-[9px] font-bold tracking-wider"
                 style={{ backgroundColor: colors.warningBg, borderColor: colors.warning, color: colors.warning }}
               >
-                PAY NOW
+                Unpaid
               </span>
             ) : (
-              <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold flex-shrink-0 tracking-wide"
-                style={{ backgroundColor: listBadgeStyle.bg, borderColor: listBadgeStyle.bg, color: listBadgeStyle.text }}>
+              <span className="px-2 py-0.5 rounded-full border text-[9px] font-bold shrink-0 tracking-wide"
+                style={{ backgroundColor: listBadgeStyle.bg, borderColor: listBadgeStyle.text, color: listBadgeStyle.text }}>
                 {listBadgeStyle.label}
               </span>
             )}

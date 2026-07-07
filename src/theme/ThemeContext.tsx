@@ -28,6 +28,7 @@ const ThemeContext = createContext<ThemeContextValue>({
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [mode, setModeState] = useState<ThemeMode>('system');
   const [systemIsDark, setSystemIsDark] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   // Restore persisted theme on mount + detect system preference
   useEffect(() => {
@@ -38,6 +39,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setSystemIsDark(mq.matches);
     const handler = (e: MediaQueryListEvent) => setSystemIsDark(e.matches);
     mq.addEventListener('change', handler);
+    
+    setMounted(true);
+    
     return () => mq.removeEventListener('change', handler);
   }, []);
 
@@ -71,7 +75,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
+    <ThemeContext.Provider value={value}>
+      {mounted ? children : null}
+    </ThemeContext.Provider>
   );
 }
 

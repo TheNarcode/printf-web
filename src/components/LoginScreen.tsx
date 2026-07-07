@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { Sun, Moon } from 'lucide-react';
@@ -32,8 +32,8 @@ const SLIDES = [
   },
 ];
 
-export default function OnboardingScreen() {
-  const { isAuthenticated, isLoading, signInWithGoogle } = useAuth();
+export default function LoginScreen() {
+  const { isAuthenticated, isLoading, isAuthenticating, signInWithGoogle } = useAuth();
   const { colors, isDark, setMode } = useTheme();
   const router = useRouter();
   
@@ -41,7 +41,7 @@ export default function OnboardingScreen() {
   const [isAnimating, setIsAnimating] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const nextSlide = () => {
+  const nextSlide = useCallback(() => {
     setIsAnimating(true);
     setTimeout(() => {
       setIsAnimating(false);
@@ -52,7 +52,7 @@ export default function OnboardingScreen() {
         return newSlides;
       });
     }, 500);
-  };
+  }, []);
 
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
@@ -65,18 +65,21 @@ export default function OnboardingScreen() {
     return () => {
       if (timeoutRef.current) clearInterval(timeoutRef.current);
     };
-  }, []);
+  }, [nextSlide]);
 
-  if (isLoading || isAuthenticated) {
+  if (isLoading || isAuthenticated || isAuthenticating) {
     return (
       <div className="h-[100dvh] flex flex-col items-center justify-center z-[9999]" style={{ backgroundColor: colors.background }}>
-        <div className="w-8 h-8 rounded-full border-2 border-t-transparent animate-spin" style={{ borderColor: colors.primary }} />
-        <span className="mt-4 text-sm font-medium" style={{ color: colors.textSecondary }}>Authenticating...</span>
+        <div 
+          className="w-8 h-8 rounded-full border-[3px] animate-spin" 
+          style={{ borderBottomColor: colors.primary, borderLeftColor: colors.primary, borderRightColor: colors.primary, borderTopColor: 'transparent' }} 
+        />
+        <span className="mt-4 text-sm font-medium" style={{ color: colors.textSecondary }}>
+          {isAuthenticating ? 'Authenticating...' : 'Loading...'}
+        </span>
       </div>
     );
   }
-
-
 
   return (
     <>
@@ -85,20 +88,20 @@ export default function OnboardingScreen() {
         {/* Natural Floating Orbs Background */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
           <div
-            className="absolute top-[5%] left-[-5%] w-[30vh] h-[30vh] rounded-full"
+            className="absolute top-[5%] left-[-10%] w-[30vh] h-[30vh] rounded-full"
             style={{
               backgroundColor: colors.textSecondary,
               opacity: 0.05, 
-              animation: 'orb1 12s ease-in-out infinite alternate',
+              animation: 'orb1 16s ease-in-out infinite',
             }}
           />
 
           <div
-            className="absolute top-[40%] right-[5%] w-[35vh] h-[35vh] rounded-full"
+            className="absolute top-[40%] right-[-10%] w-[37vh] h-[37vh] rounded-full"
             style={{
               backgroundColor: colors.text,
               opacity: 0.05,
-              animation: 'orb3 13s ease-in-out infinite alternate',
+              animation: 'orb2 20s ease-in-out infinite',
             }}
           />
         </div>
