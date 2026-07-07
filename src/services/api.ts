@@ -6,18 +6,34 @@ export const API_BASE_URL = '/api/proxy';
 
 const API_TIMEOUT_MS = 15000;
 
-function fetchWithTimeout(url: string, options: RequestInit, timeoutMs = API_TIMEOUT_MS): Promise<Response> {
+function fetchWithTimeout(url: string, options: RequestInit, timeoutMs = API_TIMEOUT_MS, externalSignal?: AbortSignal): Promise<Response> {
   return new Promise((resolve, reject) => {
     const controller = new AbortController();
+    
+    const onExternalAbort = () => {
+      controller.abort();
+      reject(new Error('AbortError'));
+    };
+
+    if (externalSignal) {
+      if (externalSignal.aborted) return onExternalAbort();
+      externalSignal.addEventListener('abort', onExternalAbort);
+    }
+
     const timer = setTimeout(() => {
       controller.abort();
       reject(new Error('Request timed out. Please check your connection and try again.'));
     }, timeoutMs);
 
     fetch(url, { ...options, signal: controller.signal })
-      .then(res => { clearTimeout(timer); resolve(res); })
+      .then(res => { 
+        clearTimeout(timer); 
+        if (externalSignal) externalSignal.removeEventListener('abort', onExternalAbort);
+        resolve(res); 
+      })
       .catch(err => {
         clearTimeout(timer);
+        if (externalSignal) externalSignal.removeEventListener('abort', onExternalAbort);
         if (err.name === 'AbortError') {
           reject(new Error('Request timed out. Please check your connection and try again.'));
         } else {
@@ -93,6 +109,7 @@ export function buildPrintConfig(
 export async function uploadFile(
   file: File,
   idToken?: string | null,
+  signal?: AbortSignal,
 ): Promise<{ fileId: string }> {
   try {
     const formData = new FormData();
@@ -106,6 +123,7 @@ export async function uploadFile(
         body: formData,
       },
       30000,
+      signal
     );
 
     if (!response.ok) {

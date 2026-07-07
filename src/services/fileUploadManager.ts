@@ -11,6 +11,7 @@ interface UploadEntry {
   file: File;
   name: string;
   type: string;
+  abortController?: AbortController;
 }
 
 const MAX_RETRIES = 3;
@@ -29,11 +30,15 @@ async function doUpload(
   try {
     const token = await getToken();
     if (!token) throw new Error('No auth token');
-    const { fileId } = await uploadFile(entry.file, token);
+    
+    entry.abortController = new AbortController();
+    const { fileId } = await uploadFile(entry.file, token, entry.abortController.signal);
+    
     entry.fileId = fileId;
     entry.status = 'done';
     entry.error = null;
   } catch (err) {
+    if (err instanceof Error && err.message === 'AbortError') return; // Cancelled
     const msg = err instanceof Error ? err.message : String(err);
     entry.attempts = attempt + 1;
     if (attempt < MAX_RETRIES - 1) {
@@ -115,7 +120,11 @@ export function getFileId(localFileId: string): string {
 
 /**
  * Clear all upload state (call when flow is reset).
+ * This also aborts any ongoing network requests.
  */
 export function resetUploads(): void {
+  for (const entry of uploads.values()) {
+    entry.abortController?.abort();
+  }
   uploads.clear();
 }

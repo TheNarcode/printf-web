@@ -30,6 +30,11 @@ export default function UploadScreen() {
       const uploaded: UploadedFile[] = [];
       const skippedNames: string[] = [];
       for (const raw of rawFiles) {
+        if (raw.size > 50 * 1024 * 1024) {
+          skippedNames.push(`${raw.name} (Too large)`);
+          continue;
+        }
+
         const isDuplicate = files.some(f => f.name === raw.name && f.size === raw.size) ||
                             uploaded.some(f => f.name === raw.name && f.size === raw.size);
         if (isDuplicate) {
@@ -52,8 +57,8 @@ export default function UploadScreen() {
       if (uploaded.length > 0) addFiles(uploaded);
       if (skippedNames.length > 0) {
         CustomAlertAPI.alert(
-          'Duplicate Files Skipped',
-          `The following files were already added:\n${skippedNames.join(', ')}`
+          'Some Files Skipped',
+          `The following files were skipped (duplicates or >50MB):\n${skippedNames.join(', ')}`
         );
       }
     } finally {

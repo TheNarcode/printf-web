@@ -1,7 +1,7 @@
 'use client';
 
 import React, { memo, useCallback } from 'react';
-import { FileText, Image as ImageIcon, X } from 'lucide-react';
+import { FileText, Image as ImageIcon, Trash } from 'lucide-react';
 import { useTheme } from '../theme/ThemeContext';
 import type { UploadedFile } from '../types';
 import { formatFileSize, getFileExtLabel, getFileTypeColor } from '../utils/formatters';
@@ -45,7 +45,7 @@ const FileCard = memo(({ file, onRemove }: FileCardProps) => {
           className="p-1.5 rounded-lg transition-opacity shrink-0"
           aria-label={`Remove ${file.name}`}
         >
-          <X size={14} color={colors.textMuted} strokeWidth={2} />
+          <Trash size={14} color={colors.textMuted} strokeWidth={2} />
         </button>
       )}
     </div>
