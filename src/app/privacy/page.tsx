@@ -11,7 +11,7 @@ export default function PrivacyPage() {
   const router = useRouter();
 
   const section = (num: string, title: string, children: React.ReactNode) => (
-    <section style={{ borderTop: `1px solid ${colors.border}`, paddingTop: '1.5rem', marginBottom: '1.5rem' }}>
+    <section style={{ borderTop: num === '01' ? 'none' : `1px solid ${colors.border}`, paddingTop: num === '01' ? 0 : '1.5rem', marginBottom: '1.5rem' }}>
       <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'baseline', marginBottom: '0.75rem' }}>
         <span style={{ fontFamily: 'var(--font-geist-mono), monospace', fontSize: '0.6875rem', letterSpacing: '0.1em', opacity: 0.35, flexShrink: 0 }}>{num}</span>
         <h2 style={{ fontSize: '0.8125rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: colors.text, margin: 0 }}>{title}</h2>

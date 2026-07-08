@@ -1,7 +1,7 @@
 'use client';
 
 import React, { memo, useState } from 'react';
-import { FileText, Layers, Palette, Circle } from 'lucide-react';
+import { Printer, Layers, Palette, Circle } from 'lucide-react';
 import { useTheme } from '../theme/ThemeContext';
 import type { Order } from '../types';
 import { calculateSpending, formatCurrency } from '../utils/formatters';
@@ -54,7 +54,7 @@ const SpendingSummary = memo(({ orders }: SpendingSummaryProps) => {
       <div className="grid grid-cols-2 gap-3">
         <div className="rounded-xl border p-3 flex flex-col items-center" style={{ backgroundColor: colors.surface, borderColor: colors.border }}>
           <div className="flex items-center gap-1.5 mb-1">
-            <FileText size={12} color={colors.textMuted} strokeWidth={2} />
+            <Printer size={12} color={colors.textMuted} strokeWidth={2} />
             <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: colors.textMuted }}>Orders</span>
           </div>
           <span className="text-xl font-bold" style={{ color: colors.text }}>{summary.orderCount}</span>
