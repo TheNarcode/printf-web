@@ -1,6 +1,6 @@
 'use client';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Printer, Lock } from 'lucide-react';
+import { Printer, Lock, RefreshCw } from 'lucide-react';
 import { useTheme } from '../../theme/ThemeContext';
 import { usePrintJob } from '../../context/PrintJobContext';
 import Header from '../Header';
@@ -26,6 +26,12 @@ export default function OrderDetailScreen({ orderId }: { orderId: string }) {
   const lastRefresh = useRef(0);
 
   const [fetchAttempts, setFetchAttempts] = useState(0);
+  const [refreshing, setRefreshing] = useState(false);
+  const handleRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await refreshOrders().catch(() => {});
+    setRefreshing(false);
+  }, [refreshOrders]);
   const order = orders.find(o => o.id === orderId);
 
   useEffect(() => {
@@ -82,7 +88,21 @@ export default function OrderDetailScreen({ orderId }: { orderId: string }) {
 
   return (
     <div className="h-[100dvh] flex flex-col overflow-hidden" style={{ backgroundColor: screenBg }}>
-      <Header title={`Order#${order.orderRef || order.id.slice(0, 5)}`} showBack onBack={pop} />
+      <Header 
+        title={`Order#${order.orderRef || order.id.slice(0, 5)}`} 
+        showBack 
+        onBack={pop} 
+        rightElement={
+          <button 
+            onClick={handleRefresh} 
+            disabled={refreshing} 
+            className="p-2 transition-opacity" 
+            aria-label="Refresh"
+          >
+            <RefreshCw size={16} color={colors.text} className={refreshing ? 'animate-spin' : ''} />
+          </button>
+        }
+      />
       <main className="flex-1 overflow-y-auto pt-6 pb-4 px-6 flex flex-col">
         <div className="max-w-[480px] w-full mx-auto my-auto">
           <div className="h-3 overflow-hidden flex" style={{ backgroundColor: screenBg }}>

@@ -40,9 +40,13 @@ export function calculateFilePrice(
   const effectiveSheets = Math.ceil(pages / pagesPerSheet);
   let pricePerSheet = 0;
   if (colorMode === 'color') {
-    pricePerSheet = sides === 'single' ? 5 : 10;
+    pricePerSheet = sides === 'single' ? 6 : 12;
   } else {
-    pricePerSheet = sides === 'single' ? 3 : 2;
+    if (sides === 'single') {
+      pricePerSheet = (effectiveSheets * copies === 1) ? 3 : 2.5;
+    } else {
+      pricePerSheet = 2;
+    }
   }
   return effectiveSheets * copies * pricePerSheet;
 }
@@ -111,11 +115,13 @@ export function calculateSpending(
   let colorPages = 0;
   filtered.forEach(o => {
     o.files.forEach(f => {
-      const pages = f.file.pages * (f.settings.copies || 1);
+      const pagesPerSheet = f.settings.pagesPerSheet || 1;
+      const effectiveSheets = Math.ceil(f.file.pages / pagesPerSheet);
+      const totalForFile = effectiveSheets * (f.settings.copies || 1);
       if (f.settings.colorMode === 'bw') {
-        bwPages += pages;
+        bwPages += totalForFile;
       } else {
-        colorPages += pages;
+        colorPages += totalForFile;
       }
     });
   });
@@ -123,7 +129,7 @@ export function calculateSpending(
   return {
     totalSpent: filtered.reduce((s, o) => s + o.totalPrice, 0),
     orderCount: filtered.length,
-    pageCount: filtered.reduce((s, o) => s + o.totalPages, 0),
+    pageCount: bwPages + colorPages,
     bwPages,
     colorPages,
   };
