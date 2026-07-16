@@ -29,7 +29,7 @@ export default function PaymentScreen() {
 
   useEffect(() => {
     if (items.length === 0) {
-      router.replace('/dashboard/upload');
+      router.replace('/dashboard');
     }
   }, [items.length, router]);
   
@@ -68,7 +68,6 @@ export default function PaymentScreen() {
       const orderId = rpOrder.localOrderId;
       setStatusText('Processing transaction...');
       await refreshOrders().catch(() => {});
-      resetFlow();
       router.push(`/order-result?success=true&orderId=${orderId}`);
 
     } catch (err: unknown) {

@@ -12,7 +12,7 @@ function OrderResultContent() {
   const { colors } = useTheme();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { orders } = usePrintJob();
+  const { orders, resetFlow } = usePrintJob();
 
   const success = searchParams?.get('success') === 'true';
   const orderId = searchParams?.get('orderId');
@@ -43,9 +43,12 @@ function OrderResultContent() {
     return () => dotLottie.removeEventListener('frame', onFrame);
   }, [dotLottie]);
 
+  React.useEffect(() => {
+    resetFlow();
+  }, [resetFlow]);
+
   return (
     <div className="min-h-dvh flex flex-col" style={{ backgroundColor: colors.background }}>
-      <Header title="" />
 
       <main className="flex-1 flex flex-col justify-center items-center px-8 pb-20">
         <div className="w-[300px] h-[300px] mb-6 animate-scale-up-bounce">

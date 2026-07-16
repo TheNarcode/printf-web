@@ -21,7 +21,7 @@ function getGreeting(): string {
 
 export default function HomeScreen() {
   const { colors } = useTheme();
-  const { orders, refreshOrders } = usePrintJob();
+  const { orders, refreshOrders, resetFlow } = usePrintJob();
   const { user } = useAuth();
   const { push } = useAppNav();
   const { assertOnline } = useNetwork();
@@ -35,8 +35,9 @@ export default function HomeScreen() {
 
   const handleNewOrder = useCallback(() => {
     if (!assertOnline()) return;
+    resetFlow();
     push({ id: 'upload', transition: 'push' });
-  }, [push, assertOnline]);
+  }, [push, assertOnline, resetFlow]);
 
   const handleOrderPress = useCallback((order: Order) => {
     push({ id: 'order_detail', transition: 'push', params: { orderId: order.id } });
