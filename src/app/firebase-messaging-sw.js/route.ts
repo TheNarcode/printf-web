@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
 
 export function GET() {
   const content = `
@@ -15,12 +15,12 @@ export function GET() {
     });
 
     const messaging = firebase.messaging();
-    
+
     messaging.onBackgroundMessage(payload => {
       console.log('[firebase-messaging-sw.js] Background message received:', payload);
       if (payload.notification) return;
-      
-      const { title = 'printf', body = '' } = payload.data || {};
+
+      const { title = 'Shree Printer and Xerox', body = '' } = payload.data || {};
       const notificationOptions = {
         body,
         icon: '/favicon.ico',
@@ -43,7 +43,7 @@ export function GET() {
 
   return new NextResponse(content, {
     headers: {
-      'Content-Type': 'application/javascript',
+      "Content-Type": "application/javascript",
     },
   });
 }

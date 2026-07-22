@@ -1,103 +1,337 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import Header from '../../components/Header';
-import { useTheme } from '../../theme/ThemeContext';
+import React from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import Header from "../../components/Header";
+import { useTheme } from "../../theme/ThemeContext";
 
 export default function PrivacyPage() {
   const { colors } = useTheme();
   const router = useRouter();
 
   const section = (num: string, title: string, children: React.ReactNode) => (
-    <section style={{ borderTop: num === '01' ? 'none' : `1px solid ${colors.border}`, paddingTop: num === '01' ? 0 : '1.5rem', marginBottom: '1.5rem' }}>
-      <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'baseline', marginBottom: '0.75rem' }}>
-        <span style={{ fontFamily: 'var(--font-geist-mono), monospace', fontSize: '0.6875rem', letterSpacing: '0.1em', opacity: 0.35, flexShrink: 0 }}>{num}</span>
-        <h2 style={{ fontSize: '0.8125rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: colors.text, margin: 0 }}>{title}</h2>
+    <section
+      style={{
+        borderTop: num === "01" ? "none" : `1px solid ${colors.border}`,
+        paddingTop: num === "01" ? 0 : "1.5rem",
+        marginBottom: "1.5rem",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          gap: "1.5rem",
+          alignItems: "baseline",
+          marginBottom: "0.75rem",
+        }}
+      >
+        <span
+          style={{
+            fontFamily: "var(--font-geist-mono), monospace",
+            fontSize: "0.6875rem",
+            letterSpacing: "0.1em",
+            opacity: 0.35,
+            flexShrink: 0,
+          }}
+        >
+          {num}
+        </span>
+        <h2
+          style={{
+            fontSize: "0.8125rem",
+            fontWeight: 700,
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            color: colors.text,
+            margin: 0,
+          }}
+        >
+          {title}
+        </h2>
       </div>
-      <div style={{ paddingLeft: '2.75rem', fontSize: '0.875rem', lineHeight: '1.65', color: colors.textSecondary }}>
+      <div
+        style={{
+          paddingLeft: "2.75rem",
+          fontSize: "0.875rem",
+          lineHeight: "1.65",
+          color: colors.textSecondary,
+        }}
+      >
         {children}
       </div>
     </section>
   );
 
   const row = (label: string, value: string) => (
-    <div key={label} style={{ display: 'flex', gap: '1rem', borderTop: `1px solid ${colors.border}`, padding: '0.625rem 0', alignItems: 'baseline' }}>
-      <span style={{ fontFamily: 'var(--font-geist-mono), monospace', fontSize: '0.6875rem', letterSpacing: '0.05em', opacity: 0.5, width: '7rem', flexShrink: 0 }}>{label}</span>
-      <span style={{ fontSize: '0.875rem', color: colors.textSecondary }}>{value}</span>
+    <div
+      key={label}
+      style={{
+        display: "flex",
+        gap: "1rem",
+        borderTop: `1px solid ${colors.border}`,
+        padding: "0.625rem 0",
+        alignItems: "baseline",
+      }}
+    >
+      <span
+        style={{
+          fontFamily: "var(--font-geist-mono), monospace",
+          fontSize: "0.6875rem",
+          letterSpacing: "0.05em",
+          opacity: 0.5,
+          width: "7rem",
+          flexShrink: 0,
+        }}
+      >
+        {label}
+      </span>
+      <span style={{ fontSize: "0.875rem", color: colors.textSecondary }}>
+        {value}
+      </span>
     </div>
   );
 
   return (
-    <div style={{ minHeight: '100dvh', backgroundColor: colors.background, color: colors.text, fontFamily: 'var(--font-geist-sans), system-ui, sans-serif' }}>
+    <div
+      style={{
+        minHeight: "100dvh",
+        backgroundColor: colors.background,
+        color: colors.text,
+        fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
+      }}
+    >
       <Header title="Privacy Policy" showBack onBack={() => router.back()} />
-      <main style={{ maxWidth: '42rem', margin: '0 auto', padding: '1.5rem 1.5rem 6rem' }}>
+      <main
+        style={{
+          maxWidth: "42rem",
+          margin: "0 auto",
+          padding: "1.5rem 1.5rem 6rem",
+        }}
+      >
+        {section(
+          "01",
+          "Data We Collect",
+          <>
+            <p style={{ marginBottom: "0.75rem" }}>
+              We collect the minimum necessary to operate the service:
+            </p>
+            {row(
+              "Email address",
+              "Collected via Google Sign-In. Used solely to identify your account and associate orders.",
+            )}
+            {row(
+              "Uploaded files",
+              "Stored in Cloudflare R2. Auto-deleted within 24 hours regardless of order status. No copies retained.",
+            )}
+            {row(
+              "Order metadata",
+              "Page count, colour mode, copies, duplex preference — stored to process and track your print job.",
+            )}
+            <p
+              style={{
+                marginTop: "0.875rem",
+                fontSize: "0.8125rem",
+                fontStyle: "italic",
+                opacity: 0.7,
+              }}
+            >
+              We collect no name, phone number, device ID, location, or
+              biometric data. No analytics. No ad tracking. No user profiling.
+            </p>
+          </>,
+        )}
 
-        {section('01', 'Data We Collect', <>
-          <p style={{ marginBottom: '0.75rem' }}>We collect the minimum necessary to operate the service:</p>
-          {row('Email address', 'Collected via Google Sign-In. Used solely to identify your account and associate orders.')}
-          {row('Uploaded files', 'Stored in Cloudflare R2. Auto-deleted within 24 hours regardless of order status. No copies retained.')}
-          {row('Order metadata', 'Page count, colour mode, copies, duplex preference — stored to process and track your print job.')}
-          <p style={{ marginTop: '0.875rem', fontSize: '0.8125rem', fontStyle: 'italic', opacity: 0.7 }}>
-            We collect no name, phone number, device ID, location, or biometric data. No analytics. No ad tracking. No user profiling.
-          </p>
-        </>)}
+        {section(
+          "02",
+          "Payments",
+          <>
+            <p>
+              All payments are handled by{" "}
+              <strong style={{ color: colors.text }}>Razorpay</strong>{" "}
+              (RBI-regulated, PCI-DSS certified). Shree Printer and Xerox never
+              sees, stores, or touches your payment credentials — card numbers,
+              UPI IDs, or banking tokens are entered directly into Razorpay's
+              infrastructure.
+            </p>
+            <p style={{ marginTop: "0.625rem" }}>
+              We share your email with Razorpay only to generate a payment
+              order. Their processing is governed by the{" "}
+              <a
+                href="https://razorpay.com/privacy-policy/"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: colors.text, textDecoration: "underline" }}
+              >
+                Razorpay Privacy Policy
+              </a>
+              .
+            </p>
+          </>,
+        )}
 
-        {section('02', 'Payments', <>
-          <p>All payments are handled by <strong style={{ color: colors.text }}>Razorpay</strong> (RBI-regulated, PCI-DSS certified). printf never sees, stores, or touches your payment credentials — card numbers, UPI IDs, or banking tokens are entered directly into Razorpay's infrastructure.</p>
-          <p style={{ marginTop: '0.625rem' }}>We share your email with Razorpay only to generate a payment order. Their processing is governed by the{' '}
-            <a href="https://razorpay.com/privacy-policy/" target="_blank" rel="noopener noreferrer" style={{ color: colors.text, textDecoration: 'underline' }}>Razorpay Privacy Policy</a>.
-          </p>
-        </>)}
+        {section(
+          "03",
+          "Infrastructure",
+          <>
+            <p style={{ marginBottom: "0.75rem" }}>
+              Shree Printer and Xerox runs entirely on Cloudflare's edge
+              network:
+            </p>
+            {row("Pages", "Hosts and serves the web app.")}
+            {row("Workers", "Runs server-side API logic.")}
+            {row("D1", "Stores order records and account data.")}
+            {row("R2", "Temporary file storage. 24-hour auto-deletion.")}
+            <p style={{ marginTop: "0.875rem" }}>
+              Cloudflare may process network telemetry (IP addresses, request
+              logs) for security and reliability under their own{" "}
+              <a
+                href="https://www.cloudflare.com/privacypolicy/"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: colors.text, textDecoration: "underline" }}
+              >
+                Privacy Policy
+              </a>
+              .
+            </p>
+          </>,
+        )}
 
-        {section('03', 'Infrastructure', <>
-          <p style={{ marginBottom: '0.75rem' }}>printf runs entirely on Cloudflare's edge network:</p>
-          {row('Pages', 'Hosts and serves the web app.')}
-          {row('Workers', 'Runs server-side API logic.')}
-          {row('D1', 'Stores order records and account data.')}
-          {row('R2', 'Temporary file storage. 24-hour auto-deletion.')}
-          <p style={{ marginTop: '0.875rem' }}>Cloudflare may process network telemetry (IP addresses, request logs) for security and reliability under their own{' '}
-            <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener noreferrer" style={{ color: colors.text, textDecoration: 'underline' }}>Privacy Policy</a>.
-          </p>
-        </>)}
+        {section(
+          "04",
+          "Data Retention",
+          <>
+            {row(
+              "Uploaded files",
+              "≤ 24 hours. Automated Cloudflare R2 lifecycle policy.",
+            )}
+            {row("Order records", "Until you request account deletion.")}
+            {row("Email (account)", "Until you request account deletion.")}
+          </>,
+        )}
 
-        {section('04', 'Data Retention', <>
-          {row('Uploaded files', '≤ 24 hours. Automated Cloudflare R2 lifecycle policy.')}
-          {row('Order records', 'Until you request account deletion.')}
-          {row('Email (account)', 'Until you request account deletion.')}
-        </>)}
+        {section(
+          "05",
+          "Security",
+          <>
+            <p>
+              All traffic is encrypted over HTTPS (TLS 1.3). Files are encrypted
+              at rest (AES-256). No payment credentials are stored on our
+              systems.
+            </p>
+            <p
+              style={{
+                marginTop: "0.625rem",
+                fontSize: "0.8125rem",
+                fontStyle: "italic",
+                opacity: 0.7,
+              }}
+            >
+              Shree Printer and Xerox is a student project. Reasonable security
+              controls are in place, but we cannot guarantee absolute security
+              of any internet-facing system.
+            </p>
+          </>,
+        )}
 
-        {section('05', 'Security', <>
-          <p>All traffic is encrypted over HTTPS (TLS 1.3). Files are encrypted at rest (AES-256). No payment credentials are stored on our systems.</p>
-          <p style={{ marginTop: '0.625rem', fontSize: '0.8125rem', fontStyle: 'italic', opacity: 0.7 }}>printf is a student project. Reasonable security controls are in place, but we cannot guarantee absolute security of any internet-facing system.</p>
-        </>)}
+        {section(
+          "06",
+          "Notifications",
+          <>
+            <p>
+              Push notifications (Android) and transactional emails are sent
+              only for order status events — confirmation, ready for collection.
+              No marketing or promotional communications.
+            </p>
+          </>,
+        )}
 
-        {section('06', 'Notifications', <>
-          <p>Push notifications (Android) and transactional emails are sent only for order status events — confirmation, ready for collection. No marketing or promotional communications.</p>
-        </>)}
+        {section(
+          "07",
+          "Your Rights",
+          <>
+            <p style={{ marginBottom: "0.75rem" }}>
+              You may request, at any time:
+            </p>
+            {row("Access", "A summary of personal data we hold about you.")}
+            {row("Rectification", "Correction of inaccurate data.")}
+            {row(
+              "Erasure",
+              "Deletion of your account and all associated data.",
+            )}
+            {row("Portability", "An export of your order history.")}
+          </>,
+        )}
 
-        {section('07', 'Your Rights', <>
-          <p style={{ marginBottom: '0.75rem' }}>You may request, at any time:</p>
-          {row('Access', 'A summary of personal data we hold about you.')}
-          {row('Rectification', 'Correction of inaccurate data.')}
-          {row('Erasure', 'Deletion of your account and all associated data.')}
-          {row('Portability', 'An export of your order history.')}
-        </>)}
-
-        {section('08', 'Changes', <>
-          <p>Material changes will be communicated via in-app notification or email. The effective date above is updated with each revision. Continued use constitutes acceptance.</p>
-        </>)}
+        {section(
+          "08",
+          "Changes",
+          <>
+            <p>
+              Material changes will be communicated via in-app notification or
+              email. The effective date above is updated with each revision.
+              Continued use constitutes acceptance.
+            </p>
+          </>,
+        )}
 
         {/* Contact */}
-        <div style={{ borderTop: `1px solid ${colors.border}`, paddingTop: '1.5rem', marginTop: '0.5rem' }}>
-          <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'baseline', marginBottom: '1rem' }}>
-            <span style={{ fontFamily: 'var(--font-geist-mono), monospace', fontSize: '0.6875rem', letterSpacing: '0.1em', opacity: 0.35, flexShrink: 0 }}>—</span>
-            <h2 style={{ fontSize: '0.8125rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: colors.text, margin: 0 }}>Contact</h2>
+        <div
+          style={{
+            borderTop: `1px solid ${colors.border}`,
+            paddingTop: "1.5rem",
+            marginTop: "0.5rem",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              gap: "1.5rem",
+              alignItems: "baseline",
+              marginBottom: "1rem",
+            }}
+          >
+            <span
+              style={{
+                fontFamily: "var(--font-geist-mono), monospace",
+                fontSize: "0.6875rem",
+                letterSpacing: "0.1em",
+                opacity: 0.35,
+                flexShrink: 0,
+              }}
+            >
+              —
+            </span>
+            <h2
+              style={{
+                fontSize: "0.8125rem",
+                fontWeight: 700,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                color: colors.text,
+                margin: 0,
+              }}
+            >
+              Contact
+            </h2>
           </div>
-          <div style={{ paddingLeft: '2.75rem' }}>
-            <p style={{ fontSize: '0.875rem', color: colors.textSecondary }}>For all privacy-related enquiries, data requests, or account deletion, write to{' '}
-              <a href="mailto:thenarcode@gmail.com" style={{ color: colors.text, textDecoration: 'underline', textUnderlineOffset: '3px', fontWeight: 600 }}>thenarcode@gmail.com</a>.
+          <div style={{ paddingLeft: "2.75rem" }}>
+            <p style={{ fontSize: "0.875rem", color: colors.textSecondary }}>
+              For all privacy-related enquiries, data requests, or account
+              deletion, write to{" "}
+              <a
+                href="mailto:thenarcode@gmail.com"
+                style={{
+                  color: colors.text,
+                  textDecoration: "underline",
+                  textUnderlineOffset: "3px",
+                  fontWeight: 600,
+                }}
+              >
+                thenarcode@gmail.com
+              </a>
+              .
             </p>
           </div>
         </div>

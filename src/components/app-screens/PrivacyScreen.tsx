@@ -1,19 +1,26 @@
-'use client';
-import React from 'react';
-import { useTheme } from '../../theme/ThemeContext';
-import Header from '../Header';
-import { useAppNav } from '../../app/dashboard/layout';
+"use client";
+import React from "react";
+import { useTheme } from "../../theme/ThemeContext";
+import Header from "../Header";
+import { useAppNav } from "../../app/dashboard/layout";
 
 export default function PrivacyScreen() {
   const { colors } = useTheme();
   const { pop } = useAppNav();
   return (
-    <div className="h-full flex flex-col overflow-hidden" style={{ backgroundColor: colors.background }}>
+    <div
+      className="h-full flex flex-col overflow-hidden"
+      style={{ backgroundColor: colors.background }}
+    >
       <Header title="Privacy Policy" showBack onBack={pop} />
       <main className="flex-1 overflow-y-auto">
         <div
           className="max-w-2xl mx-auto px-6 pt-8 pb-6"
-          style={{ color: colors.textSecondary, fontSize: 14, lineHeight: 1.75 }}
+          style={{
+            color: colors.textSecondary,
+            fontSize: 14,
+            lineHeight: 1.75,
+          }}
           dangerouslySetInnerHTML={{ __html: privacyHTML }}
         />
       </main>
@@ -24,7 +31,7 @@ export default function PrivacyScreen() {
 const privacyHTML = `
 <h1 style="font-size:1.4rem;font-weight:800;margin-bottom:0.5rem">Privacy Policy</h1>
 <p>Last updated: June 28, 2026</p>
-<p>This Privacy Policy describes our policies and procedures on the collection, use and disclosure of your information when you use the printf service and tells you about your privacy rights and how the law protects you.</p>
+<p>This Privacy Policy describes our policies and procedures on the collection, use and disclosure of your information when you use the Shree Printer and Xerox (printf) service and tells you about your privacy rights and how the law protects you.</p>
 <h2>Information We Collect</h2>
 <p>We collect the following information when you sign in with Google:</p>
 <ul>
@@ -36,7 +43,7 @@ const privacyHTML = `
 <h2>Documents You Upload</h2>
 <p>Files you upload for printing are transmitted over an encrypted connection (HTTPS) and are used solely to fulfill your print order. Documents are deleted from our systems after printing is complete. We do not read, analyse, or share your documents.</p>
 <h2>Payment Information</h2>
-<p>Payments are processed by <strong>Razorpay</strong>. printf does not store any payment card details. See <a href="https://razorpay.com/privacy-policy/" target="_blank" rel="noopener noreferrer">Razorpay's Privacy Policy</a> for details on how they handle your payment data.</p>
+<p>Payments are processed by <strong>Razorpay</strong>. Shree Printer and Xerox does not store any payment card details. See <a href="https://razorpay.com/privacy-policy/" target="_blank" rel="noopener noreferrer">Razorpay's Privacy Policy</a> for details on how they handle your payment data.</p>
 <h2>How We Use Your Information</h2>
 <ul>
   <li>To authenticate your account via Google Sign-In</li>

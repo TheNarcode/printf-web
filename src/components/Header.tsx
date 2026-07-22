@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { ArrowLeft, Printer } from 'lucide-react';
-import { useTheme } from '../theme/ThemeContext';
-import { useNetwork } from '../context/NetworkContext';
+import React from "react";
+import { ArrowLeft, Printer } from "lucide-react";
+import { useTheme } from "../theme/ThemeContext";
+import { useNetwork } from "../context/NetworkContext";
 
 interface HeaderProps {
   title?: string;
@@ -15,58 +15,81 @@ interface HeaderProps {
   transparent?: boolean;
 }
 
-export default function Header({ title, subtitle, showBack, onBack, rightElement, showBrand, transparent = false }: HeaderProps) {
+export default function Header({
+  title,
+  subtitle,
+  showBack,
+  onBack,
+  rightElement,
+  showBrand,
+  transparent = false,
+}: HeaderProps) {
   const { colors } = useTheme();
   const { status } = useNetwork();
-  
-  const bannerVisible = status === 'offline' || status === 'back-online';
+
+  const bannerVisible = status === "offline" || status === "back-online";
 
   return (
     <header
-      className={`sticky top-0 z-50 px-6 ${transparent ? '' : 'backdrop-blur-md'}`}
+      className={`sticky top-0 z-50 px-6 ${transparent ? "" : "backdrop-blur-md"}`}
       style={{
-        paddingTop: bannerVisible ? '40px' : '16px',
-        transition: 'padding-top 300ms cubic-bezier(0.4, 0, 0.2, 1)',
-        ...(transparent ? { backgroundColor: 'transparent' } : { backgroundColor: colors.background + 'EE' })
+        paddingTop: bannerVisible ? "40px" : "16px",
+        transition: "padding-top 300ms cubic-bezier(0.4, 0, 0.2, 1)",
+        ...(transparent
+          ? { backgroundColor: "transparent" }
+          : { backgroundColor: colors.background + "EE" }),
       }}
     >
-      <div 
-        className={`flex items-center justify-between w-full pb-4 ${transparent ? '' : 'border-b-[1.5px]'}`}
+      <div
+        className={`flex items-center justify-between w-full pb-4 ${transparent ? "" : "border-b-[1.5px]"}`}
         style={transparent ? {} : { borderColor: colors.border }}
       >
         <div className="flex items-center gap-2.5 flex-1 min-w-0">
-        {showBack && (
-          <button
-            onClick={onBack}
-            className="p-2 rounded-lg transition-colors  flex-shrink-0"
-            style={{ color: colors.text }}
-            aria-label="Go back"
-          >
-            <ArrowLeft size={20} strokeWidth={2} />
-          </button>
-        )}
-        {showBrand ? (
-          <div className="flex items-center gap-2">
-            <Printer size={18} strokeWidth={1.8} style={{ color: colors.text }} />
-            <span className="text-lg font-bold tracking-tight" style={{ color: colors.text }}>
-              printf
+          {showBack && (
+            <button
+              onClick={onBack}
+              className="p-2 rounded-lg transition-colors  flex-shrink-0"
+              style={{ color: colors.text }}
+              aria-label="Go back"
+            >
+              <ArrowLeft size={20} strokeWidth={2} />
+            </button>
+          )}
+          {showBrand ? (
+            <div className="flex items-center gap-2">
+              <Printer
+                size={18}
+                strokeWidth={1.8}
+                style={{ color: colors.text }}
+              />
+              <span
+                className="text-lg font-bold tracking-tight"
+                style={{ color: colors.text }}
+              >
+                Shree Printer and Xerox
+              </span>
+            </div>
+          ) : title ? (
+            <span
+              className="text-lg font-semibold truncate"
+              style={{ color: colors.text }}
+            >
+              {title}
             </span>
-          </div>
-        ) : title ? (
-          <span className="text-lg font-semibold truncate" style={{ color: colors.text }}>
-            {title}
-          </span>
-        ) : null}
-      </div>
+          ) : null}
+        </div>
 
-      <div className="flex items-center gap-2 flex-shrink-0">
-        {subtitle && (
-          <span className="text-[10px] font-medium opacity-60" style={{ color: colors.textMuted }}>
-            {subtitle}
-          </span>
-        )}
-        {rightElement}
-      </div>
+        <div className="flex items-center gap-2 flex-shrink-0">
+          {subtitle && (
+            <span
+              className="text-[10px] font-medium opacity-60"
+              style={{ color: colors.textMuted }}
+            >
+              {subtitle}
+            </span>
+          )}
+          {rightElement}
+        </div>
       </div>
     </header>
   );
